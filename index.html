@@ -95,6 +95,16 @@ button{font:inherit;cursor:pointer}
 .stem{font-size:17px;font-weight:600;line-height:1.65;white-space:pre-wrap;margin:0 0 16px}
 .blank{display:inline-block;width:2.4em;height:1em;border-bottom:1.5px solid #B8BCC2;
   vertical-align:-2px;margin:0 3px}
+.blank-in{width:3.4em;border:0;border-bottom:1.5px solid #C9CCD1;background:#FFFDF6;
+  font:inherit;font-weight:600;text-align:center;padding:0 2px;margin:0 3px;
+  color:#18191C;border-radius:2px}
+.blank-in:focus{outline:none;border-color:#FB7299;background:#FFF4F7}
+.blank-in.ok{border-color:#2BA471;background:#F0FAF5}
+.blank-in.bad{border-color:#D54941;background:#FEF3F2}
+.answer-area{width:100%;min-height:120px;border:1.5px solid #E3E5E7;border-radius:10px;
+  padding:12px;font:15px/1.65 inherit;resize:vertical;background:#FCFCFD;margin:4px 0 8px}
+.answer-area:focus{outline:none;border-color:#FB7299;background:#fff}
+.answer-tip{font-size:12.5px;color:#9499A0;margin:-2px 0 10px}
 .opt{display:flex;gap:10px;width:100%;text-align:left;background:#fff;border:1.5px solid #E3E5E7;
   border-radius:10px;padding:12px 14px;margin:8px 0;font-size:15px;line-height:1.5}
 .opt:hover{border-color:#C9CCD1}
@@ -218,6 +228,32 @@ function esc(s) {
 function fmt(s) {
   return esc(String(s)).replace(/_{2,}/g, '<span class="blank"></span>');
 }
+
+// 宽容比对：全半角、空格、标点、百分号、数值写法
+function norm(s) {
+  return String(s == null ? '' : s)
+    .trim().toLowerCase()
+    .replace(/[\s\u00a0]/g, '')
+    .replace(/[，、]/g, ',')
+    .replace(/[～~—–－]/g, '~')
+    .replace(/[（]/g, '(').replace(/[）]/g, ')')
+    .replace(/[；;]/g, ';').replace(/[：]/g, ':')
+    .replace(/[。.]$/, '')
+    .replace(/％/g, '%');
+}
+function eq(input, answer) {
+  const a = norm(input), b = norm(answer);
+  if (!a) return false;
+  if (a === b) return true;
+  // 数值等价：3 == 3.00
+  const na = parseFloat(a), nb = parseFloat(b);
+  if (!isNaN(na) && !isNaN(nb) && Math.abs(na - nb) < 1e-9) return true;
+  // 答案里写了"或"的，任一对就算对
+  if (b.indexOf('或') >= 0) {
+    return b.split('或').some(function (t) { return t && norm(t) === a; });
+  }
+  return false;
+}
 const keyOf = (pi, qi) => 'p' + (pi + 1) + '-' + qi;
 
 function buildFlat() {
@@ -326,12 +362,53 @@ function renderPanel() {
         + '<p><b>正确答案：</b>' + (it.t === 'tf' ? (it.a === 0 ? '对' : '错') : 'ABCD'[it.a]) + '</p>'
         + '<p><b>解析：</b>' + esc(it.w) + '</p></div>';
     }
+  } else if (it.t === 'fill') {
+    // 填空：把题干里的 ____ 换成输入框，按空判分
+    const parts = it.s.split(/_{2,}/);
+    const nBlank = parts.length - 1;
+    const typed = (Array.isArray(v.typed) && v.typed.length === nBlank)
+      ? v.typed : new Array(nBlank).fill('');
+    const graded = v.s !== undefined;
+    let stem = '<div class="stem">';
+    parts.forEach(function (p, i) {
+      stem += fmt(p);
+      if (i < nBlank) {
+        let cls = 'blank-in';
+        if (graded) cls += eq(typed[i], it.x[i]) ? ' ok' : ' bad';
+        const w = Math.min(14, Math.max(3, String(it.x[i] || '').length + 1));
+        stem += '<input class="' + cls + '" data-b="' + i + '" value="' + esc(typed[i] || '') + '"'
+          + ' style="width:' + w + 'em"' + (graded ? ' disabled' : '') + ' placeholder="?">';
+      }
+    });
+    stem += '</div>';
+    body = stem;
+    if (!graded) {
+      body += '<div class="answer-tip">在上面每个空里输入答案，提交后逐空判分。</div>'
+        + '<button class="btn" id="submit-fill">提交并看答案</button>';
+    } else {
+      const nRight = it.x.filter(function (a, i) { return eq(typed[i], a); }).length;
+      const allOk = nRight === it.x.length;
+      body += '<div class="res ' + (allOk ? 'good' : 'bad') + '"><h4>'
+        + (allOk ? '✓ 全对（' + nRight + '/' + it.x.length + '）'
+                 : '✗ 对了 ' + nRight + '/' + it.x.length + ' 空') + '</h4>'
+        + '<p><b>参考答案：</b></p><ol>'
+        + it.x.map(function (a) { return '<li>' + esc(a) + '</li>'; }).join('') + '</ol></div>';
+      if (!allOk) {
+        body += '<div class="acts"><button class="btn ghost" id="override">我这样写也算对</button></div>';
+      }
+    }
   } else {
+    // 名词解释 / 问答 / 计算：先打字，再对答案，自评
     const ansHtml = Array.isArray(it.x)
       ? '<ol>' + it.x.map(a => '<li>' + esc(a) + '</li>').join('') + '</ol>'
       : '<p>' + esc(it.x).replace(/\n/g, '<br>') + '</p>';
+    const typed = v.typed || '';
+    body = '<div class="stem">' + fmt(it.s) + '</div>'
+      + '<textarea class="answer-area" id="answer"' + (revealed ? ' disabled' : '')
+      + ' placeholder="在这里写下你的答案（要点即可；不联网、不上传）">' + esc(typed) + '</textarea>';
     if (!revealed) {
-      body += '<button class="btn" id="reveal">看参考答案</button>';
+      body += '<div class="answer-tip">写完点下面按钮，再看参考答案并自评。</div>'
+        + '<button class="btn" id="reveal">提交并看参考答案</button>';
     } else {
       body += '<div class="res info"><h4>参考答案</h4>' + ansHtml
         + '<p style="color:#9499A0;margin-top:8px">对照一下：你写到了哪几条？漏了哪条？</p></div>'
@@ -364,13 +441,48 @@ function renderPanel() {
         renderGrid();
       };
     });
+  } else if (it.t === 'fill') {
+    const sb = document.getElementById('submit-fill');
+    if (sb) sb.onclick = () => {
+      const vals = [].slice.call(mask.querySelectorAll('.blank-in')).map(i => i.value);
+      const ok = vals.every(function (t, i) { return eq(t, it.x[i]); });
+      store[keyOf(x.pi, x.qi)] = { typed: vals, s: ok ? 1 : 0 };
+      save(); renderPanel(); renderGrid();
+    };
+    const ov = document.getElementById('override');
+    if (ov) ov.onclick = () => {
+      const vv = store[keyOf(x.pi, x.qi)] || {};
+      store[keyOf(x.pi, x.qi)] = { typed: vv.typed || [], s: 1 };
+      save(); renderPanel(); renderGrid();
+    };
   } else {
+    const ta = document.getElementById('answer');
+    if (ta && !revealed) {
+      ta.addEventListener('input', function () {
+        const vv = store[keyOf(x.pi, x.qi)] || {};
+        vv.typed = ta.value;
+        store[keyOf(x.pi, x.qi)] = vv;
+        save();
+      });
+    }
     const rv = document.getElementById('reveal');
-    if (rv) rv.onclick = () => { store[keyOf(x.pi, x.qi)] = { s: -1 }; save(); renderPanel(); renderGrid(); };
+    if (rv) rv.onclick = () => {
+      const vv = store[keyOf(x.pi, x.qi)] || {};
+      vv.typed = ta ? ta.value : (vv.typed || '');
+      vv.s = -1;
+      store[keyOf(x.pi, x.qi)] = vv;
+      save(); renderPanel(); renderGrid();
+    };
     const yes = document.getElementById('yes');
     const no = document.getElementById('no');
-    if (yes) yes.onclick = () => { store[keyOf(x.pi, x.qi)] = { s: 1 }; save(); renderPanel(); renderGrid(); };
-    if (no) no.onclick = () => { store[keyOf(x.pi, x.qi)] = { s: 0 }; save(); renderPanel(); renderGrid(); };
+    if (yes) yes.onclick = () => {
+      const vv = store[keyOf(x.pi, x.qi)] || {}; vv.s = 1;
+      store[keyOf(x.pi, x.qi)] = vv; save(); renderPanel(); renderGrid();
+    };
+    if (no) no.onclick = () => {
+      const vv = store[keyOf(x.pi, x.qi)] || {}; vv.s = 0;
+      store[keyOf(x.pi, x.qi)] = vv; save(); renderPanel(); renderGrid();
+    };
   }
 }
 
