@@ -6,48 +6,41 @@
 :root{--ink:#18191C;--ink2:#61666D;--ink3:#9499A0;--line:#E9EBEE;--bg:#F5F6F8;--pink:#FB7299}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:var(--bg);color:var(--ink);
-  font:15px/1.65 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+  font:15px/1.68 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
 header{background:#8B1D1D;color:#fff;padding:20px 0 18px}
 .hin,.wrap{max-width:780px;margin:0 auto;padding:0 16px}
 h1{margin:0 0 6px;font-size:20px}
 .hsub{font-size:13px;color:rgba(255,255,255,.9)}
-.wrap{padding-bottom:120px}
-.idbar{display:flex;gap:10px;align-items:center;background:#fff;border-radius:12px;
-  padding:12px 14px;margin:16px 0;box-shadow:0 1px 3px rgba(0,0,0,.05)}
-.idbar label{font-size:14px;color:var(--ink2);white-space:nowrap}
-.idbar input{flex:1;border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;
-  font-size:15px;outline:none;background:#fff}
-.idbar input:focus{border-color:var(--pink)}
+.wrap{padding-bottom:100px}
 .note{background:#FFF7E6;border:1px solid #FFE0A3;color:#7a5200;border-radius:10px;
-  padding:12px 14px;font-size:13.5px;margin:0 0 16px;line-height:1.75}
+  padding:12px 14px;font-size:13.5px;margin:16px 0;line-height:1.75}
 .sec{display:flex;align-items:center;gap:10px;margin:26px 0 6px;color:var(--ink2);font-size:13px}
 .sec b{color:#8B1D1D;font-size:14px}
 .sec i{flex:1;height:1px;background:var(--line);font-style:normal}
 .q{background:#fff;border-radius:14px;padding:16px;margin:12px 0;box-shadow:0 1px 3px rgba(0,0,0,.05)}
 .qtop{display:flex;justify-content:space-between;color:var(--ink3);font-size:12.5px;margin-bottom:8px}
 .qno{font-weight:700;color:#8B1D1D}
-.qs{font-weight:600;line-height:1.65;white-space:pre-wrap;margin-bottom:12px}
+.qs{font-weight:600;line-height:1.68;margin-bottom:12px}
+.blank-in{width:3.2em;border:0;border-bottom:1.5px solid #A9AEB5;background:transparent;
+  font:inherit;font-weight:600;text-align:center;padding:0 2px;margin:0 3px;border-radius:0}
+.blank-in:focus{outline:none;border-color:var(--pink);background:#FFF4F7}
 .opt{display:flex;gap:10px;align-items:flex-start;border:1.5px solid var(--line);border-radius:10px;
   padding:11px 13px;margin:8px 0;cursor:pointer;background:#fff;font-size:14.5px;line-height:1.5}
 .opt:hover{border-color:#D7DBE0}
 .opt.on{border-color:#8B1D1D;background:#FBF3F2}
 .opt .k{font-weight:700;color:var(--ink2);min-width:18px}
 .opt.on .k{color:#8B1D1D}
-.paper{border:1.5px dashed #D7DBE0;border-radius:10px;padding:11px 13px;color:#8A8F98;font-size:13.5px;
-  background:#FAFBFC}
-.paper b{color:#61666D}
+textarea{width:100%;min-height:92px;border:1.5px solid var(--line);border-radius:10px;padding:11px;
+  font:15px/1.65 inherit;resize:vertical;background:#FCFCFD;outline:none}
+textarea:focus{border-color:var(--pink);background:#fff}
 .bar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);
   padding:10px 16px;z-index:20}
 .bar .in{max-width:780px;margin:0 auto;display:flex;align-items:center;gap:12px}
 .bar .p{flex:1;font-size:13px;color:var(--ink2)}
-.btn{border:0;border-radius:10px;background:#8B1D1D;color:#fff;font-size:15px;
-  font-weight:600;padding:11px 22px;cursor:pointer}
-.btn:disabled{opacity:.5}
-.prog{height:5px;background:#EDEFF2;border-radius:3px;overflow:hidden;margin-top:6px;max-width:780px;margin-left:auto;margin-right:auto}
-.prog i{display:block;height:100%;background:#8B1D1D}
-.done{background:#fff;border-radius:14px;padding:18px;margin:16px 0;box-shadow:0 1px 3px rgba(0,0,0,.05)}
-.code{font:14px/1.5 ui-monospace,Menlo,Consolas,monospace;background:#F7F7F9;
-  border:1px dashed #C9CCD1;border-radius:10px;padding:12px;word-break:break-all;margin:10px 0;user-select:all}
+.bar a{font-size:13px;color:var(--pink);text-decoration:none}
+.prog{height:5px;background:#EDEFF2;border-radius:3px;overflow:hidden;margin-top:6px;
+  max-width:780px;margin-left:auto;margin-right:auto}
+.prog i{display:block;height:100%;background:#8B1D1D;transition:width .2s}
 .foot{color:#9AA0AA;font-size:12px;text-align:center;margin-top:26px;line-height:1.9}
 </style></head>
 <body>
@@ -56,100 +49,120 @@ h1{margin:0 0 6px;font-size:20px}
   <div class="hsub" id="pmeta"></div>
 </div></header>
 <div class="wrap">
-  <div class="idbar"><label>学号</label>
-    <input id="sid" placeholder="填学号（3–20 位数字或字母）" autocomplete="off"></div>
   <div class="note">
-    本页<b>不显示任何答案</b>。选择题、判断题直接在手机上作答；填空、名词解释、问答、计算题请写在<b>答题纸</b>上。
-    交卷后会出现一行<b>递交码</b>，复制发给老师即可。
+    直接在本页作答：选择题点选，填空题在横线上输入，名词解释 / 问答 / 计算在题下文本框里写。
+    <b>本页不显示答案</b>；作答内容只保存在这台设备上，刷新不会丢。
   </div>
-  <div id="done" class="done" style="display:none"></div>
   <div id="list"></div>
   <div class="foot">横断面设计 · 第二部分　平曲线加宽与超高</div>
 </div>
-<div class="bar"><div class="in"><div class="p" id="pcount"></div>
-  <button class="btn" id="submit">交卷</button></div></div>
+<div class="bar"><div class="in">
+  <div class="p" id="pcount"></div>
+  <a href="#" id="clear">清空本部分</a>
+</div></div>
 <div class="prog"><i id="pfill" style="width:0"></i></div>
 <script>
-const DATA = {"id": 2, "title": "第二部分　平曲线加宽与超高", "pages": "90–95", "qs": [{"t": "fill", "type": "填空", "s": "汽车在曲线上行驶时，以____轨迹半径最小，且偏向曲线内侧，故曲线内侧应增加路面宽度。", "p": 90, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "加宽值的计算公式中，b 约等于____，其中 A 表示____，R 表示____。", "p": 90, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "加宽的条件是 R≤____米。", "p": 90, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "二、三、四级公路采用____过渡进行加宽过渡。", "p": 90, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "超高值的计算公式为 ih=____，其中 μ 表示____。", "p": 90, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "超高计算值小于路拱横坡时，取____；大于最大超高时，取____。", "p": 90, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "有中间带道路的超高过渡中，绕中间带的中心线旋转适用于中间带宽度≤____米的公路。", "p": 90, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "无中间带道路的超高过渡中，新建公路适用于绕____旋转，改建公路适用于绕____旋转。", "p": 90, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "超高缓和段长度的计算公式为 lmin=____，计算结果应凑成____米的整倍数，并不小于____米长。", "p": 90, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "超高允许最小渐变率为____。", "p": 90, "sec": "填空"}, {"t": "mc", "type": "选择", "s": "汽车在曲线上行驶时，轨迹半径最小的车轮是（ ）。", "p": 91, "sec": "选择", "o": ["左前轮", "右前轮", "左后轮", "右后轮内侧"], "oi": 0}, {"t": "mc", "type": "选择", "s": "当圆曲线半径满足以下哪个条件时，需要加宽？", "p": 91, "sec": "选择", "o": ["R≤500m", "R≤250m", "R≤100m", "R≤50m"], "oi": 1}, {"t": "mc", "type": "选择", "s": "二、三、四级公路的加宽过渡方式一般采用（ ）。", "p": 91, "sec": "选择", "o": ["高次抛物线过渡", "回旋线过渡", "比例过渡", "圆曲线过渡"], "oi": 2}, {"t": "mc", "type": "选择", "s": "超高的作用是（ ）。", "p": 91, "sec": "选择", "o": ["增加路面宽度", "全部或部分抵消离心力，提高行车稳定性和舒适性", "利于横向排水", "保护路面结构"], "oi": 3}, {"t": "mc", "type": "选择", "s": "超高值的计算公式 ih=V²/(127R)－μ 中，μ 表示（ ）。", "p": 91, "sec": "选择", "o": ["设计速度", "圆曲线半径", "横向力系数", "超高横坡度"], "oi": 4}, {"t": "mc", "type": "选择", "s": "有中间带道路的超高过渡中，绕各自车道中线旋转适用于车道数大于（ ）条的公路。", "p": 92, "sec": "选择", "o": ["2", "3", "4", "6"], "oi": 5}, {"t": "mc", "type": "选择", "s": "无中间带道路的超高过渡中，新建公路适用于（ ）。", "p": 92, "sec": "选择", "o": ["绕路面内侧边缘旋转", "绕路面中心线旋转", "绕路面外侧边缘旋转", "绕路肩边缘旋转"], "oi": 6}, {"t": "mc", "type": "选择", "s": "超高缓和段长度的计算公式 lmin=B·Δi/P 中，P 表示（ ）。", "p": 92, "sec": "选择", "o": ["旋转轴至车行道外侧边缘的宽度", "超高坡度与路拱坡度的代数差", "超高渐变率", "圆曲线半径"], "oi": 7}, {"t": "mc", "type": "选择", "s": "按照公式计算的超高缓和段，应凑成（ ）的整倍数。", "p": 92, "sec": "选择", "o": ["2 米", "5 米", "10 米", "20 米"], "oi": 8}, {"t": "mc", "type": "选择", "s": "超高允许最小渐变率为（ ）。", "p": 92, "sec": "选择", "o": ["1/100", "1/200", "1/330", "1/500"], "oi": 9}, {"t": "tf", "type": "判断", "s": "汽车在曲线上行驶时，前轮轨迹半径最小，所以曲线内侧应增加路面宽度。", "p": 93, "sec": "判断", "o": ["对", "错"], "oi": 10}, {"t": "tf", "type": "判断", "s": "各级公路的路面加宽以后，路基宽度不需要相应加宽。", "p": 93, "sec": "判断", "o": ["对", "错"], "oi": 11}, {"t": "tf", "type": "判断", "s": "当圆曲线半径大于 250 米时，加宽计算值甚小，可不加宽。", "p": 93, "sec": "判断", "o": ["对", "错"], "oi": 12}, {"t": "tf", "type": "判断", "s": "四级公路可以不设缓和曲线，但圆曲线上有加宽时，应设加宽过渡段。", "p": 93, "sec": "判断", "o": ["对", "错"], "oi": 13}, {"t": "tf", "type": "判断", "s": "高次抛物线过渡和回旋线过渡在实际工程中广泛采用。", "p": 93, "sec": "判断", "o": ["对", "错"], "oi": 14}, {"t": "tf", "type": "判断", "s": "超高计算值小于路拱横坡时，应取路拱横坡值。", "p": 93, "sec": "判断", "o": ["对", "错"], "oi": 15}, {"t": "tf", "type": "判断", "s": "有中间带道路的超高过渡中，绕中间带的中心线旋转适用于各种宽度中间带的公路。", "p": 93, "sec": "判断", "o": ["对", "错"], "oi": 16}, {"t": "tf", "type": "判断", "s": "无中间带道路的超高过渡中，新建公路适用于绕路面中心线旋转。", "p": 93, "sec": "判断", "o": ["对", "错"], "oi": 17}, {"t": "tf", "type": "判断", "s": "超高缓和段长度计算出来后，应凑成 5 米的整倍数，并不小于 10 米。", "p": 93, "sec": "判断", "o": ["对", "错"], "oi": 18}, {"t": "tf", "type": "判断", "s": "设计速度越高，允许的最大渐变率越大。", "p": 93, "sec": "判断", "o": ["对", "错"], "oi": 19}, {"t": "term", "type": "名词解释", "s": "平曲线加宽", "p": 94, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "加宽过渡段", "p": 94, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "比例过渡", "p": 94, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "平曲线超高", "p": 94, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "超高渐变率", "p": 94, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "横向力系数", "p": 94, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "超高缓和段", "p": 94, "sec": "名词解释"}, {"t": "qa", "type": "问答", "s": "简述平曲线加宽的原因。", "p": 95, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "什么是加宽的条件？为什么圆曲线半径较大时可不加宽？", "p": 95, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "二、三、四级公路和高速、一级公路分别采用什么加宽过渡方法？各自特点是什么？", "p": 95, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "什么是平曲线超高？超高的作用是什么？", "p": 95, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "超高值的计算公式是什么？有哪两种特殊情况需要调整？", "p": 95, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "有中间带道路的超高过渡方式有哪三种？各自的适用条件是什么？", "p": 95, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "无中间带道路的超高过渡方式有哪三种？各自的适用条件是什么？", "p": 95, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "超高缓和段长度的计算公式是什么？计算结果有什么圆整要求？", "p": 95, "sec": "问答"}], "obj": [3, 1, 2, 1, 2, 2, 0, 2, 1, 2, 1, 1, 0, 0, 1, 0, 1, 1, 0, 1]};
-const PART = DATA.id;
-const P = DATA;
-let answers = new Array(P.obj.length).fill(-1);
-let submitted = false;
-const startedAt = Date.now();
-
-const $ = id => document.getElementById(id);
+const DATA = {"id": 2, "title": "第二部分　平曲线加宽与超高", "pages": "90–95", "qs": [{"t": "fill", "type": "填空", "s": "汽车在曲线上行驶时，以____轨迹半径最小，且偏向曲线内侧，故曲线内侧应增加路面宽度。", "p": 90, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "加宽值的计算公式中，b 约等于____，其中 A 表示____，R 表示____。", "p": 90, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "加宽的条件是 R≤____米。", "p": 90, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "二、三、四级公路采用____过渡进行加宽过渡。", "p": 90, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "超高值的计算公式为 ih=____，其中 μ 表示____。", "p": 90, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "超高计算值小于路拱横坡时，取____；大于最大超高时，取____。", "p": 90, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "有中间带道路的超高过渡中，绕中间带的中心线旋转适用于中间带宽度≤____米的公路。", "p": 90, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "无中间带道路的超高过渡中，新建公路适用于绕____旋转，改建公路适用于绕____旋转。", "p": 90, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "超高缓和段长度的计算公式为 lmin=____，计算结果应凑成____米的整倍数，并不小于____米长。", "p": 90, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "超高允许最小渐变率为____。", "p": 90, "sec": "填空"}, {"t": "mc", "type": "选择", "s": "汽车在曲线上行驶时，轨迹半径最小的车轮是（ ）。", "p": 91, "sec": "选择", "o": ["左前轮", "右前轮", "左后轮", "右后轮内侧"]}, {"t": "mc", "type": "选择", "s": "当圆曲线半径满足以下哪个条件时，需要加宽？", "p": 91, "sec": "选择", "o": ["R≤500m", "R≤250m", "R≤100m", "R≤50m"]}, {"t": "mc", "type": "选择", "s": "二、三、四级公路的加宽过渡方式一般采用（ ）。", "p": 91, "sec": "选择", "o": ["高次抛物线过渡", "回旋线过渡", "比例过渡", "圆曲线过渡"]}, {"t": "mc", "type": "选择", "s": "超高的作用是（ ）。", "p": 91, "sec": "选择", "o": ["增加路面宽度", "全部或部分抵消离心力，提高行车稳定性和舒适性", "利于横向排水", "保护路面结构"]}, {"t": "mc", "type": "选择", "s": "超高值的计算公式 ih=V²/(127R)－μ 中，μ 表示（ ）。", "p": 91, "sec": "选择", "o": ["设计速度", "圆曲线半径", "横向力系数", "超高横坡度"]}, {"t": "mc", "type": "选择", "s": "有中间带道路的超高过渡中，绕各自车道中线旋转适用于车道数大于（ ）条的公路。", "p": 92, "sec": "选择", "o": ["2", "3", "4", "6"]}, {"t": "mc", "type": "选择", "s": "无中间带道路的超高过渡中，新建公路适用于（ ）。", "p": 92, "sec": "选择", "o": ["绕路面内侧边缘旋转", "绕路面中心线旋转", "绕路面外侧边缘旋转", "绕路肩边缘旋转"]}, {"t": "mc", "type": "选择", "s": "超高缓和段长度的计算公式 lmin=B·Δi/P 中，P 表示（ ）。", "p": 92, "sec": "选择", "o": ["旋转轴至车行道外侧边缘的宽度", "超高坡度与路拱坡度的代数差", "超高渐变率", "圆曲线半径"]}, {"t": "mc", "type": "选择", "s": "按照公式计算的超高缓和段，应凑成（ ）的整倍数。", "p": 92, "sec": "选择", "o": ["2 米", "5 米", "10 米", "20 米"]}, {"t": "mc", "type": "选择", "s": "超高允许最小渐变率为（ ）。", "p": 92, "sec": "选择", "o": ["1/100", "1/200", "1/330", "1/500"]}, {"t": "tf", "type": "判断", "s": "汽车在曲线上行驶时，前轮轨迹半径最小，所以曲线内侧应增加路面宽度。", "p": 93, "sec": "判断", "o": ["对", "错"]}, {"t": "tf", "type": "判断", "s": "各级公路的路面加宽以后，路基宽度不需要相应加宽。", "p": 93, "sec": "判断", "o": ["对", "错"]}, {"t": "tf", "type": "判断", "s": "当圆曲线半径大于 250 米时，加宽计算值甚小，可不加宽。", "p": 93, "sec": "判断", "o": ["对", "错"]}, {"t": "tf", "type": "判断", "s": "四级公路可以不设缓和曲线，但圆曲线上有加宽时，应设加宽过渡段。", "p": 93, "sec": "判断", "o": ["对", "错"]}, {"t": "tf", "type": "判断", "s": "高次抛物线过渡和回旋线过渡在实际工程中广泛采用。", "p": 93, "sec": "判断", "o": ["对", "错"]}, {"t": "tf", "type": "判断", "s": "超高计算值小于路拱横坡时，应取路拱横坡值。", "p": 93, "sec": "判断", "o": ["对", "错"]}, {"t": "tf", "type": "判断", "s": "有中间带道路的超高过渡中，绕中间带的中心线旋转适用于各种宽度中间带的公路。", "p": 93, "sec": "判断", "o": ["对", "错"]}, {"t": "tf", "type": "判断", "s": "无中间带道路的超高过渡中，新建公路适用于绕路面中心线旋转。", "p": 93, "sec": "判断", "o": ["对", "错"]}, {"t": "tf", "type": "判断", "s": "超高缓和段长度计算出来后，应凑成 5 米的整倍数，并不小于 10 米。", "p": 93, "sec": "判断", "o": ["对", "错"]}, {"t": "tf", "type": "判断", "s": "设计速度越高，允许的最大渐变率越大。", "p": 93, "sec": "判断", "o": ["对", "错"]}, {"t": "term", "type": "名词解释", "s": "平曲线加宽", "p": 94, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "加宽过渡段", "p": 94, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "比例过渡", "p": 94, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "平曲线超高", "p": 94, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "超高渐变率", "p": 94, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "横向力系数", "p": 94, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "超高缓和段", "p": 94, "sec": "名词解释"}, {"t": "qa", "type": "问答", "s": "简述平曲线加宽的原因。", "p": 95, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "什么是加宽的条件？为什么圆曲线半径较大时可不加宽？", "p": 95, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "二、三、四级公路和高速、一级公路分别采用什么加宽过渡方法？各自特点是什么？", "p": 95, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "什么是平曲线超高？超高的作用是什么？", "p": 95, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "超高值的计算公式是什么？有哪两种特殊情况需要调整？", "p": 95, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "有中间带道路的超高过渡方式有哪三种？各自的适用条件是什么？", "p": 95, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "无中间带道路的超高过渡方式有哪三种？各自的适用条件是什么？", "p": 95, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "超高缓和段长度的计算公式是什么？计算结果有什么圆整要求？", "p": 95, "sec": "问答"}]};
+const KEY = 'hz_paper_' + DATA.id;
+let st = {};
+try { st = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { st = {}; }
+const save = () => localStorage.setItem(KEY, JSON.stringify(st));
 const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
-const b64e = s => btoa(unescape(encodeURIComponent(s))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
 
-$('ptitle').textContent = P.title;
-$('pmeta').textContent = '共 ' + P.qs.length + ' 题（客观 ' + P.obj.length + ' 题可机读）· 课件第 ' + P.pages + ' 页';
+document.getElementById('ptitle').textContent = DATA.title;
+document.getElementById('pmeta').textContent =
+  '共 ' + DATA.qs.length + ' 题 · 课件第 ' + DATA.pages + ' 页 · 直接在本页作答';
 
-let html = '';
-let lastSec = '';
-P.qs.forEach((q, idx) => {
+let html = '', lastSec = '';
+DATA.qs.forEach((q, i) => {
   if (q.sec !== lastSec) {
     lastSec = q.sec;
     html += '<div class="sec"><b>' + esc(q.sec) + '</b><i></i></div>';
   }
-  html += '<section class="q"><div class="qtop"><span class="qno">' + (idx + 1) + '</span>'
-    + '<span>' + q.type + ' · 课件 P' + q.p + '</span></div>'
-    + '<div class="qs">' + esc(q.s) + '</div>';
-  if (q.oi !== undefined) {
-    html += q.o.map((t, k) =>
-      '<div class="opt" data-o="' + q.oi + '" data-k="' + k + '">'
-      + '<span class="k">' + (q.type === '判断' ? (k === 0 ? '√' : '×') : 'ABCD'[k]) + '</span>'
-      + '<span>' + esc(t) + '</span></div>').join('');
+  html += '<section class="q"><div class="qtop"><span class="qno">' + (i + 1) + '</span>'
+    + '<span>' + q.type + ' · 课件 P' + q.p + '</span></div>';
+
+  if (q.t === 'fill') {
+    const segs = q.s.split(/_{2,}/);
+    const n = segs.length - 1;
+    const vals = (st['f' + i] && st['f' + i].length === n) ? st['f' + i] : new Array(n).fill('');
+    let line = '<div class="qs">';
+    segs.forEach((seg, k) => {
+      line += esc(seg);
+      if (k < n) {
+        const w = 7;
+        line += '<input class="blank-in" data-q="' + i + '" data-b="' + k
+          + '" style="width:' + w + 'em" value="' + esc(vals[k] || '') + '">';
+      }
+    });
+    html += line + '</div>';
   } else {
-    html += '<div class="paper">本题请写在<b>答题纸</b>上（答题纸按题号作答，本题不机读）</div>';
+    html += '<div class="qs">' + esc(q.s) + '</div>';
+    if (q.t === 'mc' || q.t === 'tf') {
+      const picked = st['c' + i];
+      html += q.o.map((t, k) => {
+        const key = q.t === 'tf' ? (k === 0 ? '√' : '×') : 'ABCD'[k];
+        return '<div class="opt' + (picked === k ? ' on' : '') + '" data-q="' + i + '" data-k="' + k + '">'
+          + '<span class="k">' + key + '</span><span>' + esc(t) + '</span></div>';
+      }).join('');
+    } else {
+      const v = (st['t' + i] || '');
+      html += '<textarea data-q="' + i + '" placeholder="在这里作答">' + esc(v) + '</textarea>';
+    }
   }
   html += '</section>';
 });
-$('list').innerHTML = html;
+document.getElementById('list').innerHTML = html;
+
+function progress() {
+  let done = 0;
+  DATA.qs.forEach((q, i) => {
+    if (q.t === 'mc' || q.t === 'tf') { if (st['c' + i] !== undefined) done++; }
+    else if (q.t === 'fill') {
+      const v = st['f' + i] || [];
+      if (v.length && v.every(x => String(x).trim() !== '')) done++;
+    } else if (String(st['t' + i] || '').trim() !== '') done++;
+  });
+  document.getElementById('pcount').textContent = '已作答 ' + done + ' / ' + DATA.qs.length;
+  document.getElementById('pfill').style.width = Math.round(done / DATA.qs.length * 100) + '%';
+}
 
 document.querySelectorAll('.opt').forEach(el => {
   el.onclick = () => {
-    if (submitted) return;
-    const oi = Number(el.dataset.o);
-    answers[oi] = Number(el.dataset.k);
-    document.querySelectorAll('.opt[data-o="' + oi + '"]').forEach(x => x.classList.remove('on'));
+    const i = Number(el.dataset.q);
+    st['c' + i] = Number(el.dataset.k);
+    save();
+    document.querySelectorAll('.opt[data-q="' + i + '"]').forEach(x => x.classList.remove('on'));
     el.classList.add('on');
-    update();
+    progress();
   };
 });
 
-function update() {
-  const done = answers.filter(a => a >= 0).length;
-  $('pcount').textContent = submitted ? '已交卷' : '客观题已答 ' + done + ' / ' + answers.length;
-  $('pfill').style.width = Math.round(done / answers.length * 100) + '%';
-}
-
-$('submit').onclick = () => {
-  const sid = ($('sid').value || '').trim().replace(/\s+/g, '');
-  if (!/^[0-9A-Za-z_-]{3,20}$/.test(sid)) { alert('请先填学号（3–20 位数字或字母）'); $('sid').focus(); return; }
-  const blank = answers.filter(a => a < 0).length;
-  if (blank && !confirm('还有 ' + blank + ' 道客观题没答，确定交卷？')) return;
-
-  submitted = true;
-  const sec = Math.round((Date.now() - startedAt) / 1000);
-  const code = b64e([sid, PART, sec, answers.map(a => a < 0 ? 'x' : String(a)).join('')].join('|'));
-  $('done').style.display = 'block';
-  $('done').innerHTML = '<h3 style="margin:0 0 8px">已交卷</h3>'
-    + '<div style="color:#61666D;font-size:14px">学号 <b>' + esc(sid) + '</b> · 第' + PART
-    + '部分 · 用时 ' + Math.floor(sec / 60) + ' 分 ' + (sec % 60) + ' 秒</div>'
-    + '<div class="code">' + code + '</div>'
-    + '<button class="btn" id="copy">复制递交码</button>'
-    + '<div style="color:#9499A0;font-size:12.5px;margin-top:10px">'
-    + '把这一行发给老师；<b>答题纸</b>另交。</div>';
-  $('copy').onclick = () => {
-    if (navigator.clipboard) navigator.clipboard.writeText(code).then(() => alert('已复制'), () => alert('请长按手动复制'));
-    else alert('请长按手动复制');
+document.querySelectorAll('input.blank-in').forEach(inp => {
+  inp.oninput = () => {
+    const i = Number(inp.dataset.q);
+    const all = document.querySelectorAll('input.blank-in[data-q="' + i + '"]');
+    st['f' + i] = [].map.call(all, x => x.value);
+    save(); progress();
   };
-  document.querySelectorAll('.opt').forEach(x => x.style.pointerEvents = 'none');
-  $('submit').disabled = true;
-  update();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+document.querySelectorAll('textarea[data-q]').forEach(ta => {
+  ta.oninput = () => {
+    st['t' + Number(ta.dataset.q)] = ta.value;
+    save(); progress();
+  };
+});
+
+document.getElementById('clear').onclick = () => {
+  if (!confirm('清空本部分的作答？')) return;
+  st = {}; save();
+  document.querySelectorAll('.opt').forEach(x => x.classList.remove('on'));
+  document.querySelectorAll('input.blank-in').forEach(x => { x.value = ''; });
+  document.querySelectorAll('textarea[data-q]').forEach(x => { x.value = ''; });
+  progress();
 };
 
-update();
+progress();
 </script>
 </body></html>
