@@ -1,0 +1,540 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#FB7299">
+<title>横断面设计 · 题库自测</title>
+<style>
+:root{
+  --pink:#FB7299; --pink-d:#E45C82; --blue:#00AEEC;
+  --ink:#18191C; --ink2:#61666D; --ink3:#9499A0;
+  --bg:#F6F7F8; --line:#F1F2F3; --card:#fff;
+  --ok:#2BA471; --bad:#D54941;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{max-width:100%;overflow-x:hidden}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:15px/1.6 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif;}
+a{color:inherit;text-decoration:none}
+button{font:inherit;cursor:pointer}
+
+/* ---------- 顶栏 ---------- */
+.topbar{position:sticky;top:0;z-index:30;background:#fff;border-bottom:1px solid var(--line)}
+.tb{max-width:1240px;margin:0 auto;height:58px;display:flex;align-items:center;gap:18px;
+  padding:0 16px;overflow:hidden}
+.logo{font-size:19px;font-weight:700;letter-spacing:.5px;white-space:nowrap;flex:0 0 auto}
+.logo em{font-style:normal;color:var(--pink)}
+.logo span{font-size:12px;color:var(--ink3);font-weight:400;margin-left:6px}
+.tabs{display:flex;gap:6px;overflow:auto;scrollbar-width:none;flex:1 1 auto;min-width:0}
+.tabs::-webkit-scrollbar{display:none}
+.tab{border:0;background:transparent;color:var(--ink2);padding:6px 12px;border-radius:8px;
+  font-size:14px;white-space:nowrap;flex:0 0 auto}
+.tab.on{background:var(--pink);color:#fff;font-weight:600}
+.tab:hover:not(.on){background:#F1F2F3}
+.search{flex:0 0 auto;display:flex;align-items:center;gap:8px;
+  background:#F1F2F3;border-radius:10px;padding:0 12px;height:36px;width:250px}
+.search input{border:0;background:transparent;outline:none;width:100%;font-size:14px;color:var(--ink)}
+.search input::placeholder{color:var(--ink3)}
+
+/* ---------- 横幅 ---------- */
+.banner{background:linear-gradient(120deg,#FF9DB5 0%,#FB7299 45%,#F25C87 100%);
+  color:#fff;padding:34px 0 30px;position:relative;overflow:hidden}
+.banner::after{content:"";position:absolute;right:-60px;top:-80px;width:300px;height:300px;
+  border-radius:50%;background:rgba(255,255,255,.14)}
+.bn{max-width:1240px;margin:0 auto;padding:0 16px;position:relative;z-index:1}
+.banner h1{margin:0 0 8px;font-size:26px;letter-spacing:.5px}
+.banner p{margin:0;color:rgba(255,255,255,.9);font-size:13.5px}
+.bstats{display:flex;gap:10px;margin-top:18px;flex-wrap:wrap}
+.bstat{background:rgba(255,255,255,.18);border:1px solid rgba(255,255,255,.3);
+  border-radius:10px;padding:8px 14px;min-width:110px}
+.bstat b{display:block;font-size:20px;line-height:1.2}
+.bstat span{font-size:12px;color:rgba(255,255,255,.85)}
+
+/* ---------- 内容区 ---------- */
+.main{max-width:1240px;margin:0 auto;padding:20px 16px 60px}
+.section-head{display:flex;align-items:baseline;gap:10px;margin:6px 2px 12px}
+.section-head h2{margin:0;font-size:16px}
+.section-head span{font-size:12.5px;color:var(--ink3)}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin:0 0 14px}
+.chip{border:1px solid var(--line);background:#fff;color:var(--ink2);border-radius:999px;
+  padding:5px 12px;font-size:13px}
+.chip.on{border-color:var(--pink);color:var(--pink);background:#FFF4F7}
+
+.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:14px;
+  display:flex;flex-direction:column;gap:8px;transition:.15s;min-height:132px}
+.card:hover{transform:translateY(-2px);box-shadow:0 8px 20px rgba(0,0,0,.07);border-color:#E3E5E7}
+.card-top{display:flex;align-items:center;justify-content:space-between}
+.badge{font-size:11.5px;padding:1px 7px;border-radius:5px;border:1px solid}
+.b-fill{color:#7A5AF8;border-color:#E4DBFF;background:#F6F2FF}
+.b-tf{color:#0E9F6E;border-color:#C6F0DF;background:#EEFBF5}
+.b-mc{color:#2570EB;border-color:#D3E2FF;background:#F1F6FF}
+.b-term{color:#C2410C;border-color:#FFE0C7;background:#FFF6EC}
+.b-qa{color:#0E7490;border-color:#C9EDF5;background:#EEF9FC}
+.b-calc{color:#B42318;border-color:#F7D0CC;background:#FEF3F2}
+.page{font-size:12px;color:var(--ink3)}
+.card h3{margin:0;font-size:14px;font-weight:600;line-height:1.5;
+  display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.card-meta{margin-top:auto;display:flex;align-items:center;justify-content:space-between;
+  font-size:12px;color:var(--ink3)}
+.state.ok{color:var(--ok)}.state.bad{color:var(--bad)}
+.empty{grid-column:1/-1;text-align:center;color:var(--ink3);padding:60px 0;font-size:14px}
+
+/* ---------- 浮层答题 ---------- */
+.mask{position:fixed;inset:0;background:rgba(0,0,0,.45);display:none;z-index:50;
+  align-items:center;justify-content:center;padding:20px}
+.mask.on{display:flex}
+.panel{background:#fff;border-radius:14px;width:100%;max-width:760px;max-height:88vh;
+  display:flex;flex-direction:column;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.25)}
+.p-head{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--line)}
+.p-head .grow{flex:1;min-width:0}
+.p-head .title{font-size:14px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.close{border:0;background:#F1F2F3;border-radius:8px;width:30px;height:30px;font-size:16px;
+  line-height:1;color:var(--ink2)}
+.close:hover{background:#E3E5E7}
+.p-body{padding:20px 22px 26px;overflow:auto}
+.stem{font-size:17px;font-weight:600;line-height:1.65;white-space:pre-wrap;margin:0 0 16px}
+.blank{display:inline-block;width:2.4em;height:1em;border-bottom:1.5px solid #B8BCC2;
+  vertical-align:-2px;margin:0 3px}
+.blank-in{width:3.4em;border:0;border-bottom:1.5px solid #C9CCD1;background:#FFFDF6;
+  font:inherit;font-weight:600;text-align:center;padding:0 2px;margin:0 3px;
+  color:#18191C;border-radius:2px}
+.blank-in:focus{outline:none;border-color:#FB7299;background:#FFF4F7}
+.blank-in.ok{border-color:#2BA471;background:#F0FAF5}
+.blank-in.bad{border-color:#D54941;background:#FEF3F2}
+.answer-area{width:100%;min-height:120px;border:1.5px solid #E3E5E7;border-radius:10px;
+  padding:12px;font:15px/1.65 inherit;resize:vertical;background:#FCFCFD;margin:4px 0 8px}
+.answer-area:focus{outline:none;border-color:#FB7299;background:#fff}
+.answer-tip{font-size:12.5px;color:#9499A0;margin:-2px 0 10px}
+.opt{display:flex;gap:10px;width:100%;text-align:left;background:#fff;border:1.5px solid #E3E5E7;
+  border-radius:10px;padding:12px 14px;margin:8px 0;font-size:15px;line-height:1.5}
+.opt:hover{border-color:#C9CCD1}
+.opt .k{font-weight:700;color:var(--ink2);min-width:18px}
+.opt.right{border-color:var(--ok);background:#F0FAF5}
+.opt.right .k{color:var(--ok)}
+.opt.wrong{border-color:var(--bad);background:#FEF3F2}
+.opt.wrong .k{color:var(--bad)}
+.opt.dim{opacity:.5}
+.opt:disabled{cursor:default}
+.res{margin-top:14px;padding:14px;border-radius:10px;font-size:14.5px}
+.res.good{background:#F0FAF5;border:1px solid #C9ECD9}
+.res.bad{background:#FEF3F2;border:1px solid #F7D5D2}
+.res.info{background:#F7F8FA;border:1px solid #E8EAED}
+.res h4{margin:0 0 8px;font-size:15px}
+.res ol{margin:6px 0 6px 20px;padding:0}
+.res li{margin:4px 0}
+.res p{margin:6px 0}
+.acts{display:flex;gap:10px;margin-top:18px}
+.btn{flex:1;border:0;border-radius:10px;padding:11px;font-size:15px;font-weight:600;
+  background:var(--pink);color:#fff}
+.btn:hover{background:var(--pink-d)}
+.btn.ghost{background:#fff;color:var(--pink);border:1.5px solid var(--pink)}
+.btn.ghost:hover{background:#FFF4F7}
+.btn:disabled{opacity:.5;cursor:default}
+
+.foot{max-width:1240px;margin:0 auto;padding:0 16px 40px;color:var(--ink3);font-size:12.5px;line-height:2}
+.foot a{color:var(--pink)}
+
+@media (max-width:1080px){.grid{grid-template-columns:repeat(3,1fr)}}
+@media (max-width:820px){
+  .grid{grid-template-columns:repeat(2,1fr)}
+  .search{width:150px}
+  .banner h1{font-size:21px}
+  .tabs{gap:2px}
+  .tab{padding:6px 9px;font-size:13px}
+  .logo span{display:none}
+}
+@media (max-width:600px){
+  .grid{grid-template-columns:repeat(2,1fr);gap:10px}
+  .card{min-height:120px;padding:11px}
+  .card h3{font-size:13px;-webkit-line-clamp:3}
+  .search{display:none}
+  .tb{gap:10px;padding:0 12px}
+  .tab{padding:6px 8px;font-size:12.5px}
+  .chips{gap:6px}
+  .chip{padding:4px 10px;font-size:12.5px}
+  .banner h1{font-size:19px}
+  .bstats{gap:8px}
+  .bstat{min-width:92px;padding:7px 11px}
+  .bstat b{font-size:18px}
+}
+</style></head>
+<body>
+
+<header class="topbar"><div class="tb">
+  <div class="logo">横断面<em>·</em>自测<span>第四章</span></div>
+  <nav class="tabs">
+    <button class="tab on" data-part="0">全部</button>
+    <button class="tab" data-part="1">第一部分</button>
+    <button class="tab" data-part="2">第二部分</button>
+    <button class="tab" data-part="3">第三部分</button>
+  </nav>
+  <div class="search"><input id="q" placeholder="搜索题干关键词"></div>
+</div></header>
+
+<section class="banner"><div class="bn">
+  <h1>第四章 横断面设计 · 158 题自测</h1>
+  <p>选择判断即时判分 · 填空问答展开解析 · 进度只存本机</p>
+  <div class="bstats">
+    <div class="bstat"><b id="s-total">0</b><span>总题量</span></div>
+    <div class="bstat"><b id="s-done">0</b><span>已作答</span></div>
+    <div class="bstat"><b id="s-rate">—</b><span>正确率</span></div>
+  </div>
+</div></section>
+
+<main class="main">
+  <div class="section-head">
+    <h2>题目列表</h2>
+    <span id="list-count"></span>
+  </div>
+  <div class="chips">
+    <button class="chip on" data-type="">全部题型</button>
+    <button class="chip" data-type="mc">选择</button>
+    <button class="chip" data-type="tf">判断</button>
+    <button class="chip" data-type="fill">填空</button>
+    <button class="chip" data-type="term">名词解释</button>
+    <button class="chip" data-type="qa">问答</button>
+    <button class="chip" data-type="calc">计算</button>
+  </div>
+  <div class="grid" id="grid"></div>
+</main>
+
+<div class="mask" id="mask"></div>
+
+<div class="foot">
+  题目与答案取自课件 45–51、90–95、104–111 页，已逐题核对。<br>
+  版式参考 B 站风格，未使用其标识与内容。　<a href="#" id="reset">清除本机记录</a>
+</div>
+
+<script>
+const DATA = {"parts": [{"id": 1, "title": "第一部分　横断面组成、车道与路肩", "range": "课件 45–51 页", "items": [{"t": "fill", "s": "公路路基宽度为____与____之和，当设有中间带、加（减）速车道、爬坡车道、紧急停车带、非机动车道等时，应计入这部分宽度。", "p": 45, "x": ["车道宽度", "路肩宽度"]}, {"t": "fill", "s": "公路横断面按整体布局可分为____和____两大类，其中双幅又分为____断面和____断面。", "p": 45, "x": ["单幅", "双幅", "分离式", "整体式"]}, {"t": "fill", "s": "单幅单车道适用于____级公路，单幅双车道适用于____级公路，双幅多车道适用于____和____级公路。", "p": 45, "x": ["四", "二、三、四", "高速", "一级"]}, {"t": "fill", "s": "城市道路横断面的组成包括行车道、分隔带、绿化带、____和____等。", "p": 45, "x": ["人行道", "汽车停靠站"]}, {"t": "fill", "s": "高速公路和一级公路的路基标准横断面中，中间带由____和两条____组成。", "p": 45, "x": ["中央分隔带", "左侧路缘带"]}, {"t": "fill", "s": "城市道路按路幅布置类型可分为四种：单幅路旧称____，双幅路旧称____，三幅路旧称____，四幅路旧称____。", "p": 45, "x": ["一块板", "两块板", "三块板", "四块板"]}, {"t": "fill", "s": "机动车道宽度根据设计车辆宽度、设计交通量、交通组成和____确定。", "p": 45, "x": ["汽车行驶速度"]}, {"t": "fill", "s": "行车道宽度由____和____两部分组成，其中富余宽度主要与____有关。", "p": 45, "x": ["设计车辆宽度", "富余宽度", "车速"]}, {"t": "fill", "s": "高速公路和一级公路当车道数为双车道以上时，应按____增加。", "p": 45, "x": ["双数"]}, {"t": "fill", "s": "路肩分为____和____，其中能承受车辆荷载、供临时停车使用的是____。", "p": 45, "x": ["硬路肩", "土路肩", "硬路肩"]}, {"t": "fill", "s": "高速公路右侧硬路肩的一般值为____米，土路肩的一般值为____米。", "p": 45, "x": ["3.00", "0.75"]}, {"t": "fill", "s": "八车道以上高速公路宜设置左侧硬路肩，其宽度不应小于____米。", "p": 45, "x": ["2.50"]}, {"t": "fill", "s": "高速公路右侧硬路肩宽度小于____米时，应设置紧急停车带，其宽度应为____米，有效长度不应小于____米，间距不宜大于____米。", "p": 45, "x": ["2.50", "3.50", "40", "500"]}, {"t": "fill", "s": "路拱横坡度的设置目的是____。", "p": 45, "x": ["利于横向排水"]}, {"t": "fill", "s": "路拱的基本形式有____、____和____三种，其中高等级公路采用____型路拱。", "p": 45, "x": ["抛物线型", "直线型", "折线型", "直线"]}, {"t": "fill", "s": "水泥混凝土路面宜采用____型路拱。", "p": 45, "x": ["折线"]}, {"t": "fill", "s": "土路肩横坡一般比路面大____，曲线段外侧的土路肩横坡应做成____的反向横坡。", "p": 45, "x": ["1.0%～2.0%", "3%或4%"]}, {"t": "fill", "s": "人行道横坡宜采用____坡，坡度为____。", "p": 45, "x": ["单面", "1.0%～2.0%"]}, {"t": "tf", "s": "公路路基宽度就是车道宽度与路肩宽度之和，不包含中间带宽度。", "p": 46, "o": ["对", "错"], "a": 1, "w": "路基宽度＝车道宽＋路肩宽；设中间带、加减速车道、爬坡车道、紧急停车带、非机动车道时一并计入。"}, {"t": "tf", "s": "分离式断面和整体式断面都属于双幅公路的范畴。", "p": 46, "o": ["对", "错"], "a": 0, "w": "双幅分两类：上下行完全分开的分离式，以及中间设分隔带的整体式。"}, {"t": "tf", "s": "城市道路中，四幅路的安全性最高，但占地最宽、造价最高。", "p": 46, "o": ["对", "错"], "a": 0, "w": "四幅路对向与机非全部分开，通行能力与安全性最好，代价是宽度与造价。"}, {"t": "tf", "s": "公路和城市道路的本质区别在于服务对象不同，公路服务“车”，城市道路服务“人”。", "p": 46, "o": ["对", "错"], "a": 0, "w": "城市道路还要满足非机动车和行人，故有人行道、非机动车道、分隔带。"}, {"t": "tf", "s": "硬路肩可以作为超车道使用，以提高通行效率。", "p": 46, "o": ["对", "错"], "a": 1, "w": "硬路肩是应急通道，不是行车道，更不是超车道；借硬路肩超车极易追尾、翻车。"}, {"t": "tf", "s": "左侧硬路肩宽度不包含左侧路缘带宽度。", "p": 46, "o": ["对", "错"], "a": 1, "w": "左侧硬路肩宽度包含左侧路缘带宽度；八车道以上亦然。"}, {"t": "tf", "s": "路拱横坡坡度越大，对行车越有利。", "p": 46, "o": ["对", "错"], "a": 1, "w": "横坡过大车辆有侧向滑移趋势，行车不稳；横坡只以排水够用为度。"}, {"t": "tf", "s": "折线型路拱适用于沥青混凝土路面。", "p": 46, "o": ["对", "错"], "a": 1, "w": "折线型路拱用于水泥混凝土路面，因其分块铺筑、便于放样。"}, {"t": "tf", "s": "中间带由中央分隔带和两条右侧路缘带组成。", "p": 46, "o": ["对", "错"], "a": 1, "w": "中间带＝中央分隔带＋两条左侧路缘带；右侧路缘带在硬路肩内。"}, {"t": "tf", "s": "城市道路的两侧分车带用于分隔机动车和非机动车。", "p": 46, "o": ["对", "错"], "a": 0, "w": "两侧带把非机动车道与机动车道分开，解决机非混行。"}, {"t": "mc", "s": "以下哪种路幅布置类型适用于高速公路和一级公路？", "p": 47, "o": ["单幅单车道", "单幅双车道", "双幅多车道", "单幅多车道"], "a": 2, "w": "双幅多车道适用于高速、一级；单幅单车道为四级，单幅双车道为二、三、四级。"}, {"t": "mc", "s": "城市道路中，旧称“三块板”的是哪种布置类型？", "p": 47, "o": ["单幅路", "双幅路", "三幅路", "四幅路"], "a": 2, "w": "三幅路中间机动车道、两侧分隔带隔开非机动车道，解决机非混行。"}, {"t": "mc", "s": "设计速度为 120 km/h 时，公路车道宽度一般取多少米？", "p": 47, "o": ["3.00", "3.25", "3.50", "3.75"], "a": 3, "w": "120/100/80 km/h 均为 3.75 m；60/40 为 3.50；30 为 3.25；20 为 3.00。"}, {"t": "mc", "s": "高速公路右侧硬路肩宽度小于多少米时，应设置紧急停车带？", "p": 47, "o": ["2.00", "2.50", "3.00", "3.50"], "a": 1, "w": "右侧硬路肩＜2.50 m 时须设紧急停车带：宽 3.50 m、有效长≥40 m、间距≤500 m。"}, {"t": "mc", "s": "以下哪种路面类型对应的路拱横坡度最小？", "p": 47, "o": ["水泥混凝土路面", "碎石路面", "低级路面", "半整齐石块路面"], "a": 0, "w": "路面越平整密实横坡越小：水泥/沥青混凝土 1.0%~2.0%，碎石 2.5%~3.5%，低级路面 3.0%~4.0%。"}, {"t": "mc", "s": "中间带的组成部分包括（ ）。", "p": 48, "o": ["中央分隔带", "左侧路缘带", "右侧路缘带", "A 和 B"], "a": 3, "w": "中间带＝中央分隔带＋两条左侧路缘带。"}, {"t": "mc", "s": "关于硬路肩的作用，以下说法错误的是（ ）。", "p": 48, "o": ["供临时停车", "作为超车道使用", "提供侧向余宽", "为养护提供场地"], "a": 1, "w": "硬路肩是应急通道，不是超车道；其余三项都是路肩的作用。"}, {"t": "mc", "s": "路拱横坡度的确定与以下哪个因素无关？", "p": 48, "o": ["路面结构类型", "车道宽度", "自然条件", "设计车辆颜色"], "a": 3, "w": "横坡取决于路面结构类型、车道宽度和自然条件（降雨），与车辆颜色无关。"}, {"t": "term", "s": "路拱", "p": 49, "x": "将路面做成由中央向两侧倾斜的拱形，其倾斜大小用百分率表示，称路拱横坡度；设置目的是利于横向排水。"}, {"t": "term", "s": "中间带", "p": 49, "x": "分隔上下行交通的设施，由中央分隔带和两条左侧路缘带组成；高速公路、一级公路整体式路基必须设置。"}, {"t": "term", "s": "硬路肩", "p": 49, "x": "进行了铺装、能承受车辆荷载的路肩，属应急通道而非行车道；供故障车临时停靠，并为养护、埋设设施提供场地。"}, {"t": "term", "s": "分离式断面", "p": 49, "x": "上下行车道完全分开、各自独立成路基的双幅断面，不设中间带，每一幅左侧须设左侧硬路肩；适用于山区、丘陵等地形复杂路段。"}, {"t": "term", "s": "单幅路", "p": 49, "x": "上下行车道在同一平面上、中间不设分隔带的布置形式（旧称一块板），机非混行、对向混行，宽度利用率高、造价低。"}, {"t": "term", "s": "紧急停车带", "p": 49, "x": "当高速公路和作为干线的一级公路右侧硬路肩宽度小于 2.50 m 时，在硬路肩外侧加宽设置、专供故障车辆临时停靠的区域；宽 3.50 m、有效长≥40 m、间距≤500 m。"}, {"t": "term", "s": "路缘带", "p": 49, "x": "设在行车道外侧的窄条带（右侧硬路肩内或中间带两侧），宽度 0.50 m，属行车道的一部分，提供侧向余宽并诱导视线。"}, {"t": "term", "s": "土路肩", "p": 49, "x": "不加铺装的土质路肩，位于硬路肩外侧，主要作用是保护路基和路面；横坡一般比路面大 1.0%~2.0%。"}, {"t": "qa", "s": "简述公路横断面的组成，并说明单幅路和双幅路的主要区别。", "p": 50, "x": "公路横断面由行车道、路肩、错车道、爬坡车道、路缘带等组成。单幅：上下行在同一平面，中间无分隔带，机非混行、对向混行；双幅：上下行分开、设分隔带（分离式或整体式），对向车流被分开，机非是否分开取决于具体形式。"}, {"t": "qa", "s": "城市道路横断面有哪四种布置类型？请分别说明各自的特点和适用条件。", "p": 50, "x": "（1）单幅路（一块板）：机非混行、对向混行，宽度利用率高、造价低，适用于交通量不大的次干路或支路。（2）双幅路（两块板）：对向分开、机非仍混行，适用于对向交通量大而机非较少的道路。（3）三幅路（三块板）：机非分开、对向未分，适用于机非都较多的主干路。（4）四幅路（四块板）：对向与机非全部分开，安全性与通行能力最强，适用于快速路或交通量很大的主干路。"}, {"t": "qa", "s": "路肩有哪些作用？硬路肩和土路肩有何区别？", "p": 50, "x": "作用：①保护和支撑路面结构；②供临时停车，防止事故与混乱；③提供侧向余宽与侧向通视条件；④为养护、埋设设施提供场地，也可供行人和非机动车使用；⑤精心养护能增进美观。区别：硬路肩有铺装、能承受车辆荷载，是应急通道、非行车道；土路肩不加铺装、为土质，主要作用是保护路基和路面。"}, {"t": "qa", "s": "简述行车道宽度的确定方法，并说明设计速度与车道宽度之间的关系。", "p": 50, "x": "行车道宽度＝设计车辆宽度＋富余宽度。设计车辆宽取载重汽车车厢宽度 2.5 m；富余宽度指车辆与路面边缘、车身与车身之间的横向安全距离，主要与车速有关。设计速度越高，车辆横向摆动越大，所需车道越宽。"}, {"t": "qa", "s": "什么是中间带？它由哪几部分组成？设置中间带的目的是什么？", "p": 50, "x": "中间带是分隔上下行交通的设施，由中央分隔带和两条左侧路缘带组成。目的是分隔对向车流、杜绝随意掉头，防止夜间车灯眩光，并为护栏、绿化、管线、行人过街安全岛提供场地，提高行车安全性与通行能力。"}, {"t": "qa", "s": "简述路拱横坡度的设置目的，并说明确定路拱横坡度时需要考虑哪些因素。", "p": 51, "x": "目的是横向排水，防止雨水积在路面上。需考虑三个因素：路面结构类型（越平整密实，横坡越小）、车道宽度（车道越宽，横坡越大）、自然条件（降雨量大的地区横坡适当加大）。"}, {"t": "qa", "s": "分离式断面和整体式断面在路肩设置上有何不同？为什么分离式断面需要设置左侧硬路肩？", "p": 51, "x": "整体式断面有中央分隔带，只在右侧设硬路肩；分离式断面上下行完全分开、每幅无中央分隔带，因此每幅左侧也必须设左侧硬路肩（含左侧路缘带）：120 km/h 取 1.25 m、100 km/h 取 1.00 m、80 和 60 km/h 取 0.75 m。目的是保证左侧车道故障车能安全停靠，并为养护提供作业空间。"}, {"t": "qa", "s": "什么是紧急停车带？在什么条件下需要设置？其宽度、长度和间距有何规定？", "p": 51, "x": "是当高速公路和作为干线的一级公路右侧硬路肩宽度小于 2.50 m 时，在硬路肩外侧加宽设置、专供故障车辆临时停靠的区域。宽度应为 3.50 m，有效长度不应小于 40 m，间距不宜大于 500 m。"}, {"t": "qa", "s": "公路和城市道路的本质区别是什么？请从服务对象、功能定位、横断面组成和管理归属四个方面进行说明。", "p": 51, "x": "（1）服务对象：公路服务“车”，尤其长途过境交通；城市道路服务“人”，要同时满足机动车、非机动车和行人。（2）功能定位：公路核心是“通过”，追求快速顺畅；城市道路核心是“通达”，连接地块，兼顾商业、居住、公交。（3）横断面组成：公路主要是行车道加路肩，组成简单；城市道路必须考虑人行道、非机动车道、分隔带、绿化带、公交站台，组成复杂。（4）管理归属：公路归交通部门，城市道路归住建或市政部门，两套体系、两套标准。"}, {"t": "qa", "s": "请结合实例说明城市道路横断面设计中各组成部分的宽度和横坡是如何确定的。", "p": 51, "x": "以城市沥青混凝土路面为例，横断面从左到右：人行道 3.5 m、横坡 2%；非机动车道 2.5 m；机动车道单向 3 条、每条 3.5 m、横坡 1.5%；中间绿化带宽 2 m、横坡 0%；右侧对称布置，路基总宽 36 m。宽度按道路等级、设计速度和交通量查规范确定；横坡原则是机动车道最小（1.5%）以保证行车舒适，非机动车道和人行道稍大（2.0%）以利排水，绿化带取 0%。"}]}, {"id": 2, "title": "第二部分　平曲线加宽与超高", "range": "课件 90–95 页", "items": [{"t": "fill", "s": "汽车在曲线上行驶时，以____轨迹半径最小，且偏向曲线内侧，故曲线内侧应增加路面宽度。", "p": 90, "x": ["后轮内侧"]}, {"t": "fill", "s": "加宽值的计算公式中，b 约等于____，其中 A 表示____，R 表示____。", "p": 90, "x": ["A²/(2R)", "汽车后轴至前保险杠的距离", "圆曲线的半径"]}, {"t": "fill", "s": "加宽的条件是 R≤____米。", "p": 90, "x": ["250"]}, {"t": "fill", "s": "二、三、四级公路采用____过渡进行加宽过渡。", "p": 90, "x": ["比例"]}, {"t": "fill", "s": "超高值的计算公式为 ih=____，其中 μ 表示____。", "p": 90, "x": ["V²/(127R)－μ", "横向力系数"]}, {"t": "fill", "s": "超高计算值小于路拱横坡时，取____；大于最大超高时，取____。", "p": 90, "x": ["路拱横坡值", "最大超高值"]}, {"t": "fill", "s": "有中间带道路的超高过渡中，绕中间带的中心线旋转适用于中间带宽度≤____米的公路。", "p": 90, "x": ["4.5"]}, {"t": "fill", "s": "无中间带道路的超高过渡中，新建公路适用于绕____旋转，改建公路适用于绕____旋转。", "p": 90, "x": ["路面内侧边缘", "路面中心线"]}, {"t": "fill", "s": "超高缓和段长度的计算公式为 lmin=____，计算结果应凑成____米的整倍数，并不小于____米长。", "p": 90, "x": ["B·Δi/P", "5", "10"]}, {"t": "fill", "s": "超高允许最小渐变率为____。", "p": 90, "x": ["1/330"]}, {"t": "mc", "s": "汽车在曲线上行驶时，轨迹半径最小的车轮是（ ）。", "p": 91, "o": ["左前轮", "右前轮", "左后轮", "右后轮内侧"], "a": 3, "w": "后轮内侧轨迹半径最小且偏向曲线内侧，这是曲线内侧加宽的根本原因。"}, {"t": "mc", "s": "当圆曲线半径满足以下哪个条件时，需要加宽？", "p": 91, "o": ["R≤500m", "R≤250m", "R≤100m", "R≤50m"], "a": 1, "w": "加宽条件为 R≤250 m；半径较大时加宽计算值甚小可忽略。"}, {"t": "mc", "s": "二、三、四级公路的加宽过渡方式一般采用（ ）。", "p": 91, "o": ["高次抛物线过渡", "回旋线过渡", "比例过渡", "圆曲线过渡"], "a": 2, "w": "比例过渡简单常用（bx=k·b），但起终点有折角；高次抛物线与回旋线实际很少采用。"}, {"t": "mc", "s": "超高的作用是（ ）。", "p": 91, "o": ["增加路面宽度", "全部或部分抵消离心力，提高行车稳定性和舒适性", "利于横向排水", "保护路面结构"], "a": 1, "w": "超高把弯道外侧抬高、形成向内倾斜的单向横坡，用重力分力平衡离心力。"}, {"t": "mc", "s": "超高值的计算公式 ih=V²/(127R)－μ 中，μ 表示（ ）。", "p": 91, "o": ["设计速度", "圆曲线半径", "横向力系数", "超高横坡度"], "a": 2, "w": "μ 是轮胎与路面间的横向摩擦阻力，需在规范范围内选定。"}, {"t": "mc", "s": "有中间带道路的超高过渡中，绕各自车道中线旋转适用于车道数大于（ ）条的公路。", "p": 92, "o": ["2", "3", "4", "6"], "a": 2, "w": "车道数＞4 时，绕边缘旋转外侧抬高过大，改为各自绕车道中线旋转。"}, {"t": "mc", "s": "无中间带道路的超高过渡中，新建公路适用于（ ）。", "p": 92, "o": ["绕路面内侧边缘旋转", "绕路面中心线旋转", "绕路面外侧边缘旋转", "绕路肩边缘旋转"], "a": 0, "w": "绕内侧边缘旋转时内侧不降低，有利于路基排水，故适用于新建；改建多用绕中心线。"}, {"t": "mc", "s": "超高缓和段长度的计算公式 lmin=B·Δi/P 中，P 表示（ ）。", "p": 92, "o": ["旋转轴至车行道外侧边缘的宽度", "超高坡度与路拱坡度的代数差", "超高渐变率", "圆曲线半径"], "a": 2, "w": "P 为超高渐变率，即旋转轴线与行车道外边缘线之间的相对坡度。"}, {"t": "mc", "s": "按照公式计算的超高缓和段，应凑成（ ）的整倍数。", "p": 92, "o": ["2 米", "5 米", "10 米", "20 米"], "a": 1, "w": "计算结果凑成 5 m 的整倍数，且不小于 10 m。"}, {"t": "mc", "s": "超高允许最小渐变率为（ ）。", "p": 92, "o": ["1/100", "1/200", "1/330", "1/500"], "a": 2, "w": "最大渐变率按速度查表，最小渐变率为 1/330，太小则过渡段过长、排水不利。"}, {"t": "tf", "s": "汽车在曲线上行驶时，前轮轨迹半径最小，所以曲线内侧应增加路面宽度。", "p": 93, "o": ["对", "错"], "a": 1, "w": "是后轮内侧轨迹半径最小，不是前轮。"}, {"t": "tf", "s": "各级公路的路面加宽以后，路基宽度不需要相应加宽。", "p": 93, "o": ["对", "错"], "a": 1, "w": "路面加宽后路基宽度也要相应加宽，否则路肩被挤掉。"}, {"t": "tf", "s": "当圆曲线半径大于 250 米时，加宽计算值甚小，可不加宽。", "p": 93, "o": ["对", "错"], "a": 0, "w": "加宽条件为 R≤250 m，半径更大时加宽值可忽略。"}, {"t": "tf", "s": "四级公路可以不设缓和曲线，但圆曲线上有加宽时，应设加宽过渡段。", "p": 93, "o": ["对", "错"], "a": 0, "w": "四级公路可不设缓和曲线，但 R≤250 m 有加宽时仍须设加宽过渡段。"}, {"t": "tf", "s": "高次抛物线过渡和回旋线过渡在实际工程中广泛采用。", "p": 93, "o": ["对", "错"], "a": 1, "w": "这两种方法计算复杂，实际中很少采用；常用的是比例过渡。"}, {"t": "tf", "s": "超高计算值小于路拱横坡时，应取路拱横坡值。", "p": 93, "o": ["对", "错"], "a": 0, "w": "算出的超高比路拱还小，就没必要专门做超高，直接沿用路拱。"}, {"t": "tf", "s": "有中间带道路的超高过渡中，绕中间带的中心线旋转适用于各种宽度中间带的公路。", "p": 93, "o": ["对", "错"], "a": 1, "w": "绕中心线旋转只适用于窄中间带（≤4.5 m）；各种宽度都能用的是绕两侧边缘旋转。"}, {"t": "tf", "s": "无中间带道路的超高过渡中，新建公路适用于绕路面中心线旋转。", "p": 93, "o": ["对", "错"], "a": 1, "w": "新建公路绕内侧边缘旋转（利排水），改建公路才绕中心线（外侧抬高小）。"}, {"t": "tf", "s": "超高缓和段长度计算出来后，应凑成 5 米的整倍数，并不小于 10 米。", "p": 93, "o": ["对", "错"], "a": 0, "w": "这是规范对超高缓和段长度的圆整要求。"}, {"t": "tf", "s": "设计速度越高，允许的最大渐变率越大。", "p": 93, "o": ["对", "错"], "a": 1, "w": "速度越高允许的最大渐变率越小：120 km/h 绕中线为 1/250，20 km/h 为 1/100。"}, {"t": "term", "s": "平曲线加宽", "p": 94, "x": "为适应汽车在曲线上行驶时后轮内侧轨迹偏向曲线内侧的需要，在曲线内侧增加路面宽度的做法。"}, {"t": "term", "s": "加宽过渡段", "p": 94, "x": "从直线段的正常宽度过渡到圆曲线段加宽后宽度的路段，使加宽值逐渐变化，避免出现台阶。"}, {"t": "term", "s": "比例过渡", "p": 94, "x": "在加宽缓和段全长范围内按长度成比例逐渐加宽，即 bx=k·b（k=Lx/L）；适用于二、三、四级公路。"}, {"t": "term", "s": "平曲线超高", "p": 94, "x": "为抵消或减小车辆在平曲线路段行驶时产生的离心力，在该路段横断面上做成外侧高于内侧的单向横坡形式。"}, {"t": "term", "s": "超高渐变率", "p": 94, "x": "旋转轴线与行车道外侧边缘线之间的相对坡度，用 P 表示，决定路面横坡变化的快慢。"}, {"t": "term", "s": "横向力系数", "p": 94, "x": "轮胎和路面之间的横向摩擦阻力，用 μ 表示；规范给出合理取值范围，过大乘客不适、易侧滑。"}, {"t": "term", "s": "超高缓和段", "p": 94, "x": "从直线段双向横坡过渡到圆曲线段单向横坡的路段，使超高值逐渐变化，保证行车平稳。"}, {"t": "qa", "s": "简述平曲线加宽的原因。", "p": 95, "x": "汽车在曲线上行驶时各轮迹半径不同，其中后轮内侧轨迹半径最小且偏向曲线内侧。若路面宽度不变，后轮内侧会驶出路面边缘、压上路肩甚至掉下路基，所以曲线内侧必须增加路面宽度，以保证行车舒适与安全。"}, {"t": "qa", "s": "什么是加宽的条件？为什么圆曲线半径较大时可不加宽？", "p": 95, "x": "加宽条件为 R≤250 m。半径较大时，后轮内偏量很小，计算出的加宽值甚小、可以忽略，故不再加宽。"}, {"t": "qa", "s": "二、三、四级公路和高速、一级公路分别采用什么加宽过渡方法？各自特点是什么？", "p": 95, "x": "二、三、四级公路采用比例过渡：方法简单、实际常用，但路面内侧与行车轨迹不完全相符，起终点出现折角、路容不美观。高速、一级公路采用高次抛物线过渡：内侧边缘圆滑美观、符合行车轨迹，但计算复杂，实际中未采用。"}, {"t": "qa", "s": "什么是平曲线超高？超高的作用是什么？", "p": 95, "x": "平曲线超高是为抵消或减小车辆在平曲线路段行驶时产生的离心力，在该路段横断面上做成外侧高于内侧的单向横坡形式。作用是全部或部分抵消离心力，提高行车的稳定性与舒适性。"}, {"t": "qa", "s": "超高值的计算公式是什么？有哪两种特殊情况需要调整？", "p": 95, "x": "ih=V²/(127R)－μ。两种情况：超高计算值小于路拱横坡时，取路拱横坡值；大于最大超高时，取最大超高值。"}, {"t": "qa", "s": "有中间带道路的超高过渡方式有哪三种？各自的适用条件是什么？", "p": 95, "x": "三种：①绕中间带的中心线旋转，适用于中间带宽度较窄（≤4.5 m）的公路；②绕中间带两侧边缘旋转，适用于各种宽度中间带的公路；③绕各自车道中线旋转，适用于车道数大于 4 条的公路。"}, {"t": "qa", "s": "无中间带道路的超高过渡方式有哪三种？各自的适用条件是什么？", "p": 95, "x": "三种：①绕路面内侧边缘旋转，内侧不降低、利于路基排水，适用于新建公路；②绕路面中心线旋转，外侧抬高值小、中线标高不变，适用于改建公路；③绕路面外侧边缘旋转，用于有特殊需求（如外侧受限）时。"}, {"t": "qa", "s": "超高缓和段长度的计算公式是什么？计算结果有什么圆整要求？", "p": 95, "x": "lmin=B·Δi/P；B 为旋转轴至车行道外侧边缘的宽度，Δi 为超高坡度与路拱坡度的代数差（绕内边缘 Δi=ih，绕中心线 Δi=ih+iG），P 为超高渐变率。计算结果应凑成 5 m 的整倍数，且不小于 10 m。"}]}, {"id": 3, "title": "第三部分　土石方计算与调配", "range": "课件 104–111 页", "items": [{"t": "fill", "s": "横断面面积计算常用的两种方法是____和____。", "p": 104, "x": ["积距法", "坐标法"]}, {"t": "fill", "s": "积距法的总面积公式为 A=____，其中 b 表示____，hi 表示____。", "p": 104, "x": ["b·Σhi", "等分宽度", "各等分点的高度"]}, {"t": "fill", "s": "坐标法的面积公式为 A=____。", "p": 104, "x": ["1/2·Σ(xi·yi+1 － xi-1·yi)"]}, {"t": "fill", "s": "当相邻两断面均为填方或均为挖方且面积大小相近时，可假定两断面之间为____，其体积公式为 V=____。", "p": 104, "x": ["棱柱体", "1/2·(F1+F2)·L"]}, {"t": "fill", "s": "当相邻两断面面积相差较大时，两断面之间更接近____，其体积公式为 V=____。", "p": 104, "x": ["棱台", "1/3·(F1+F2)·L·(1+√m/(1+m))，m=F1/F2"]}, {"t": "fill", "s": "土石方调配的目的是确定____的来源、____的去向，以及计价土石方的数量和运量。", "p": 104, "x": ["填方用土", "挖方弃土"]}, {"t": "fill", "s": "土石方调配的第一条原则是：半填半挖断面中，先____平衡，再____调配。", "p": 104, "x": ["横向", "纵向"]}, {"t": "fill", "s": "纵向调运的距离应小于____。", "p": 104, "x": ["经济运距"]}, {"t": "fill", "s": "经济运距的计算公式为 Lj=____，其中 B 表示____，T 表示____，Lm 表示____。", "p": 104, "x": ["B/T + Lm", "借土单价", "远运运费单价", "免费运距"]}, {"t": "fill", "s": "一般人工运输的免费运距为____米，汽车运输的免费运距为____公里。", "p": 104, "x": ["20", "1"]}, {"t": "fill", "s": "土石方调配中，填方＝本桩利用＋____＝横向调运＋纵向调运＋____。", "p": 104, "x": ["填缺", "借方"]}, {"t": "fill", "s": "挖方＝本桩利用＋____＝横向调运＋纵向调运＋____。", "p": 104, "x": ["挖余", "弃方"]}, {"t": "fill", "s": "挖方＋借方＝____＋弃方。", "p": 104, "x": ["填方"]}, {"t": "fill", "s": "计价土石方＝____＋____。", "p": 104, "x": ["挖方数量", "借方数量"]}, {"t": "fill", "s": "所有挖方计价，填方中的路外借土要计价，____不重复计价。", "p": 104, "x": ["移挖作填"]}, {"t": "fill", "s": "定额中“天然密实土”是指____，“夯实土”是指____，“松填土”是指____。", "p": 104, "x": ["未经扰动的自然土", "按规范要求经过分层碾压、夯实的土", "挖出的自然土自然堆放、未经夯实填在槽坑中的土"]}, {"t": "fill", "s": "土方松实系数换算表中，自然方为 1，松方为____，实方为____。", "p": 104, "x": ["1.33", "0.85"]}, {"t": "fill", "s": "生产上多采用____调配法进行土石方调配。", "p": 104, "x": ["土石方计算表"]}, {"t": "mc", "s": "横断面面积计算中，积距法的总面积公式为（ ）。", "p": 105, "o": ["A=bΣhi", "A=1/2Σ(xi·yi+1－xi-1·yi)", "A=1/2(F1+F2)L", "A=1/3(F1+F2)L"], "a": 0, "w": "积距法把断面等分为宽 b 的竖条，量各条中心高 hi 求和再乘 b。"}, {"t": "mc", "s": "当相邻两断面面积相差较大时，土石方体积计算应采用（ ）。", "p": 105, "o": ["平均断面法", "棱台公式", "积距法", "坐标法"], "a": 1, "w": "面积相近用棱柱体（平均断面法）；相差较大或填挖过渡段用棱台公式。"}, {"t": "mc", "s": "经济运距的计算公式 Lj=B/T+Lm 中，B 表示（ ）。", "p": 105, "o": ["远运运费单价", "借土单价", "免费运距", "调配方数"], "a": 1, "w": "B 为借土单价，T 为远运运费单价，Lm 为免费运距。"}, {"t": "mc", "s": "一般汽车运输的免费运距为（ ）。", "p": 105, "o": ["20 米", "100 米", "1 公里", "5 公里"], "a": 2, "w": "人工运输免费运距 20 m，汽车运输 1 km。"}, {"t": "mc", "s": "以下哪个等式是正确的？", "p": 105, "o": ["填方＝本桩利用＋挖余", "挖方＝本桩利用＋填缺", "挖方＋借方＝填方＋弃方", "计价土石方＝填方＋借方"], "a": 2, "w": "三个复核等式之一；另外两条是填方＝本桩利用＋填缺、挖方＝本桩利用＋挖余。"}, {"t": "mc", "s": "关于计价土石方，以下说法正确的是（ ）。", "p": 106, "o": ["计价土石方＝挖方数量＋填方数量", "移挖作填的土方需要重复计价", "计价土石方＝挖方数量＋借方数量", "所有填方都需要计价"], "a": 2, "w": "所有挖方计价、路外借土计价，移挖作填不重复计价。"}, {"t": "mc", "s": "土方松实系数换算表中，自然方为 1，松方为（ ）。", "p": 106, "o": ["0.85", "1.33", "1.53", "1.07"], "a": 1, "w": "自然方 1、松方 1.33、实方 0.85；1 m³ 天然土挖松后变 1.33 m³，压实后 0.85 m³。"}, {"t": "mc", "s": "土石方调配时，首先应考虑的是（ ）。", "p": 106, "o": ["纵向调运", "横向平衡", "借方", "弃方"], "a": 1, "w": "先横向平衡（移挖作填、运距最短），剩余或不足再纵向调运。"}, {"t": "mc", "s": "以下哪种情况应优先考虑上下线的土方竖向调运？", "p": 106, "o": ["直线路段", "回头曲线路段", "桥梁路段", "隧道路段"], "a": 1, "w": "回头曲线路段上下线距离近，优先考虑上下线竖向调运。"}, {"t": "mc", "s": "土石方计算表调配法中，复核检查的等式不包括（ ）。", "p": 106, "o": ["填方＝本桩利用＋填缺", "挖方＝本桩利用＋挖余", "挖方＋借方＝填方＋弃方", "填方＝借方＋弃方"], "a": 3, "w": "复核三等式不含“填方＝借方＋弃方”，该项不是调配平衡关系。"}, {"t": "tf", "s": "积距法适合用计算机程序计算，坐标法适合手工计算。", "p": 107, "o": ["对", "错"], "a": 1, "w": "说反了：积距法适合手工，坐标法精度高、适合计算机。"}, {"t": "tf", "s": "平均断面法适用于相邻两断面面积相差较大的情况。", "p": 107, "o": ["对", "错"], "a": 1, "w": "平均断面法适用于面积相近；相差较大或填挖过渡段应用棱台公式。"}, {"t": "tf", "s": "经济运距是指按费用计算的纵向调运的最大限度。", "p": 107, "o": ["对", "错"], "a": 0, "w": "运距超过经济运距，运费就比买土还贵。"}, {"t": "tf", "s": "免费运距是指在这个距离之内运输不额外计费。", "p": 107, "o": ["对", "错"], "a": 0, "w": "人工 20 m、汽车 1 km 内不额外计费。"}, {"t": "tf", "s": "土石方调配时，应先纵向调配，再横向平衡。", "p": 107, "o": ["对", "错"], "a": 1, "w": "应先横向平衡，再纵向调配。"}, {"t": "tf", "s": "计价土石方等于挖方数量加借方数量。", "p": 107, "o": ["对", "错"], "a": 0, "w": "所有挖方计价、路外借土计价，移挖作填不重复计价。"}, {"t": "tf", "s": "移挖作填的土方需要重复计价。", "p": 107, "o": ["对", "错"], "a": 1, "w": "移挖作填已在挖方中计过一次价，不重复计价。"}, {"t": "tf", "s": "天然密实土的体积大于夯实土的体积。", "p": 107, "o": ["对", "错"], "a": 0, "w": "自然方 1、实方 0.85，压实后体积变小。"}, {"t": "tf", "s": "1 立方米天然密实土挖松后变成 1.33 立方米松方。", "p": 107, "o": ["对", "错"], "a": 0, "w": "松实系数：自然方 1 → 松方 1.33 → 实方 0.85。"}, {"t": "tf", "s": "石方和土方可以混合调配，不需要分开。", "p": 107, "o": ["对", "错"], "a": 1, "w": "不同土石方应分开调配，以保证路基填方质量与构造物材料供应。"}, {"t": "term", "s": "经济运距", "p": 108, "x": "按费用计算的纵向调运的最大限度，Lj=B/T+Lm。调运距离超过经济运距时，运费比买土还贵，就不如弃方另借。"}, {"t": "term", "s": "免费运距", "p": 108, "x": "在这个距离之内运输不额外计费；一般人工运输 20 m、汽车运输 1 km。"}, {"t": "term", "s": "本桩利用", "p": 108, "x": "同一个桩号上挖出来的土直接填到旁边填方里去，是最省钱的横向调运方式。"}, {"t": "term", "s": "填缺", "p": 108, "x": "本桩利用之后，填方仍然不够的部分，需通过纵向调运或借方补充。"}, {"t": "term", "s": "挖余", "p": 108, "x": "本桩利用之后，挖方仍然用不完的部分，需通过纵向调运或弃方处理。"}, {"t": "term", "s": "计价土石方", "p": 108, "x": "需要计算费用的土石方数量，计价土石方＝挖方数量＋借方数量；所有挖方计价，路外借土计价，移挖作填不重复计价。"}, {"t": "term", "s": "天然密实土", "p": 108, "x": "未经扰动的自然土（山体中原状土），体积最“实”，松实系数按 1 计。"}, {"t": "term", "s": "夯实土", "p": 108, "x": "按规范要求经过分层碾压、夯实的土，即填到路基上压实后的土，体积比天然密实土小（系数 0.85）。"}, {"t": "term", "s": "松填土", "p": 108, "x": "挖出的自然土自然堆放、未经夯实填在槽坑中的土，体积最大（松方系数 1.33）。"}, {"t": "calc", "s": "题目一：某公路路基施工中，有一段填方路堤需要填筑。已知填方压实后的体积（实方）为 8000 m³，采用土方填筑，从取土场挖取天然密实土（自然方）来填筑。（土方松实系数：自然方 1，松方 1.33，实方 0.85）\n（1）需要从取土场挖取多少自然方的土？\n（2）挖出来的土堆放在路边，松方体积是多少？\n（3）如果利用路段本身挖方产生的天然密实土来填筑，请分析整个过程中体积是如何变化的。", "p": 109, "x": "（1）自然方 = 8000 ÷ 0.85 ≈ 9411.8 m³\n（2）松方 = 9411.8 × 1.33 ≈ 12517.7 m³\n（3）体积变化：天然密实土（自然方）→ 挖出松散堆放（松方，膨胀）→ 运输到填方处压实（实方，收缩）。挖方按自然方计、运输按松方计、填方按实方计，不做换算，挖、运、填三个环节就对不上账。"}, {"t": "calc", "s": "题目二：某路段相邻两个断面的挖方面积分别为 F1=50 m² 和 F2=60 m²，两断面之间的距离 L=20 m。\n（1）用平均断面法计算两断面之间的土方体积。\n（2）如果 F1=30 m²、F2=90 m²，面积相差较大，用棱台公式计算体积。（m=F1/F2，F2>F1）", "p": 110, "x": "（1）平均断面法：V = (F1+F2)/2 × L = (50+60)/2 × 20 = 1100.0 m³\n（2）棱台公式：m = 30/90 = 0.333，√m = 0.577\nV = (L/3)·(F1+F2)·(1 + √m/(1+m)) = (20/3)×120×(1+0.4330) = 1146.4 m³\n或按 V = (L/3)(F1+F2+√(F1·F2)) = (20/3)(30+90+51.96) = 1146.4 m³\n对比：若用平均断面法得 1200.0 m³，棱柱法高估 53.6 m³（约 4.5%）——这正是面积相差大时要用棱台公式的原因。\n【注意】课件第 110 页原备注把因子写成 (1+√m)/(1+√m)（恒等于 1）、答案写 800 m³，那是错的，应为 (1+√m/(1+m))、1146.4 m³。"}, {"t": "qa", "s": "简述横断面面积计算的两种方法，并说明各自的优缺点和适用场景。", "p": 111, "x": "积距法：把不规则横断面沿宽度方向等分成若干竖条，量出每个竖条中心高度，用 A=bΣhi 计算；优点是简单直观、适合手工；缺点是精度取决于量取准确性。坐标法：把断面轮廓看成多边形，用各转折点坐标代入 1/2Σ(xi·yi+1－xi-1·yi) 计算；优点是精度高、适合计算机编程；缺点是需精确坐标、手工计算繁琐。"}, {"t": "qa", "s": "简述土石方数量计算中平均断面法和棱台公式的适用条件。", "p": 111, "x": "平均断面法（棱柱体）适用于相邻两断面均为填方或均为挖方、且面积大小相近的情况，V=1/2(F1+F2)L。棱台公式适用于面积相差较大、特别是填挖过渡段的情况，V=1/3(F1+F2)L(1+√m/(1+m))，其中 m=F1/F2 且 F2>F1。"}, {"t": "qa", "s": "土石方调配的目的是什么？调配应遵循哪些原则？", "p": 111, "x": "目的是确定填方用土的来源、挖方弃土的去向，以及计价土石方的数量和运量。原则：①半填半挖断面先横向平衡、再纵向调配；②纵向调运距离应小于经济运距；③考虑桥涵位置和纵坡影响，一般不跨深沟、不上坡运土；④借土与弃土要与地方商量，尽量少占农田；⑤土方与石方分开调配；⑥回头曲线路段优先考虑上下线竖向调运。"}, {"t": "qa", "s": "什么是经济运距？如何计算？它在土石方调配中有什么意义？", "p": 111, "x": "经济运距是按费用计算的纵向调运的最大限度，Lj=B/T+Lm（B 借土单价、T 远运运费单价、Lm 免费运距）。意义：运距超过经济运距，运费比直接买土还贵，就不如弃掉挖方、另借土，它是“该运还是该买”的分界线。"}, {"t": "qa", "s": "土石方计算表调配法分哪几个步骤？请简要说明每个步骤的内容。", "p": 111, "x": "六步：①准备工作——计算并复核土石方数量，标注桥涵、陡坡、深沟等；②横向调运——计算本桩利用、填缺、挖余；③纵向调运——结合经济运距确定方案，用箭头标明方向与数量；④计算借方、废方数量和总运量；⑤复核检查；⑥计算计价土石方。"}, {"t": "qa", "s": "复核检查土石方调配时，有哪三个等式必须成立？请写出来并解释其含义。", "p": 111, "x": "①填方＝本桩利用＋填缺＝横向调运＋纵向调运＋借方；②挖方＝本桩利用＋挖余＝横向调运＋纵向调运＋弃方；③挖方＋借方＝填方＋弃方。三个等式是土方调配的“账本”，一进一出必须对得上，对不上说明哪里算错了。"}, {"t": "qa", "s": "什么是计价土石方？为什么移挖作填不重复计价？", "p": 111, "x": "计价土石方＝挖方数量＋借方数量。移挖作填不重复计价，是因为挖出来的土已经在挖方中计过一次价，若填方再计一次就重复了；但填方中的路外借土要单独计价。"}, {"t": "qa", "s": "简述土方松实系数换算表中自然方、松方、实方三者之间的关系，并说明为什么算土方量时必须考虑松实系数换算。", "p": 111, "x": "以土方为例：自然方 1、松方 1.33、实方 0.85，三者关系为松方＞自然方＞实方。必须换算，是因为挖方按自然方计、运输按松方计、填方按实方计，不换算则挖、运、填三个环节的数量对不上账。"}, {"t": "qa", "s": "土石方调配时，为什么要考虑桥涵位置和路线纵坡的影响？为什么要尽量少占农田？", "p": 111, "x": "跨深沟运土要架桥或绕路，成本太高；上坡运土油耗大、效率低，所以调配要结合地形、避免跨沟与上坡运土。少占农田是因为取土、弃土都要占地，占农田还要赔偿青苗损失，设计时应与地方沟通，尽量选荒地、坡地，这既是经济问题也是社会责任。"}, {"t": "qa", "s": "请结合实例说明土石方计算表调配法的应用过程。", "p": 111, "x": "以某路段为例：先算出各断面的挖、填面积并列入表格；在同一桩号上横向平衡，得本桩利用、填缺、挖余；再结合经济运距确定纵向调配方案，用箭头标明方向与数量；然后计算借方、废方数量和总运量（总运量＝平均运距×调配方数）；最后用三个等式复核，全部对得上后再算计价土石方＝挖方数量＋借方数量。"}]}], "label": {"fill": "填空", "tf": "判断", "mc": "选择", "term": "名词解释", "qa": "问答", "calc": "计算"}};
+const LABEL = {fill:'填空',tf:'判断',mc:'选择',term:'名词解释',qa:'问答',calc:'计算'};
+const BADGE = {fill:'b-fill',tf:'b-tf',mc:'b-mc',term:'b-term',qa:'b-qa',calc:'b-calc'};
+const STORE = 'hz_web_v2';
+
+let store = {};
+try { store = JSON.parse(localStorage.getItem(STORE) || '{}'); } catch (e) { store = {}; }
+const save = () => localStorage.setItem(STORE, JSON.stringify(store));
+
+let flat = [];            // 扁平题目列表
+let filterPart = 0;       // 0 = 全部
+let keyword = '';
+let typeFilter = '';      // '' = 全部题型
+let cur = -1;             // 当前打开的题目在 flat 中的下标
+
+function esc(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+// 把连续的 ____ 换成真正的填空框，行尾也不会丢
+function fmt(s) {
+  return esc(String(s)).replace(/_{2,}/g, '<span class="blank"></span>');
+}
+
+// 宽容比对：全半角、空格、标点、百分号、数值写法
+function norm(s) {
+  return String(s == null ? '' : s)
+    .trim().toLowerCase()
+    .replace(/[\s\u00a0]/g, '')
+    .replace(/[，、]/g, ',')
+    .replace(/[～~—–－]/g, '~')
+    .replace(/[（]/g, '(').replace(/[）]/g, ')')
+    .replace(/[；;]/g, ';').replace(/[：]/g, ':')
+    .replace(/[。.]$/, '')
+    .replace(/％/g, '%');
+}
+function eq(input, answer) {
+  const a = norm(input), b = norm(answer);
+  if (!a) return false;
+  if (a === b) return true;
+  // 数值等价：3 == 3.00
+  const na = parseFloat(a), nb = parseFloat(b);
+  if (!isNaN(na) && !isNaN(nb) && Math.abs(na - nb) < 1e-9) return true;
+  // 答案里写了"或"的，任一对就算对
+  if (b.indexOf('或') >= 0) {
+    return b.split('或').some(function (t) { return t && norm(t) === a; });
+  }
+  return false;
+}
+const keyOf = (pi, qi) => 'p' + (pi + 1) + '-' + qi;
+
+function buildFlat() {
+  flat = [];
+  DATA.parts.forEach((p, pi) => {
+    p.items.forEach((it, qi) => {
+      flat.push({ pi: pi, qi: qi, it: it, no: flat.length + 1,
+                  part: p.id, ptitle: p.title });
+    });
+  });
+}
+
+function stateOf(pi, qi, it) {
+  const v = store[keyOf(pi, qi)];
+  if (!v) return '';
+  if (it.t === 'mc' || it.t === 'tf') return v.k === it.a ? 'ok' : 'bad';
+  if (v.s === 1) return 'ok';
+  if (v.s === 0) return 'bad';
+  return '';
+}
+
+function visible() {
+  return flat.filter(x => {
+    if (filterPart && x.part !== filterPart) return false;
+    if (typeFilter && x.it.t !== typeFilter) return false;
+    if (keyword && x.it.s.indexOf(keyword) < 0) return false;
+    return true;
+  });
+}
+
+function renderStats() {
+  let done = 0, right = 0;
+  flat.forEach(x => {
+    const st = stateOf(x.pi, x.qi, x.it);
+    if (st) done++;
+    if (st === 'ok') right++;
+  });
+  document.getElementById('s-total').textContent = flat.length;
+  document.getElementById('s-done').textContent = done;
+  document.getElementById('s-rate').textContent = done ? Math.round(right / done * 100) + '%' : '—';
+}
+
+function renderGrid() {
+  const list = visible();
+  const box = document.getElementById('grid');
+  document.getElementById('list-count').textContent = '共 ' + list.length + ' 题';
+  if (!list.length) {
+    box.innerHTML = '<div class="empty">没有匹配的题目，换个关键词试试。</div>';
+    return;
+  }
+  box.innerHTML = list.map(x => {
+    const st = stateOf(x.pi, x.qi, x.it);
+    const badge = BADGE[x.it.t] || 'b-mc';
+    const stateTxt = st === 'ok' ? '<span class="state ok">✓ 已答对</span>'
+      : st === 'bad' ? '<span class="state bad">✗ 答错</span>'
+      : '<span>未作答</span>';
+    const brief = x.it.s.replace(/\n/g, ' ').slice(0, 60);
+    return '<article class="card" data-no="' + x.no + '">'
+      + '<div class="card-top"><span class="badge ' + badge + '">' + LABEL[x.it.t] + '</span>'
+      + '<span class="page">P' + x.it.p + '</span></div>'
+      + '<h3>' + fmt(brief) + '</h3>'
+      + '<div class="card-meta"><span>' + (x.part === 1 ? '第一部分' : x.part === 2 ? '第二部分' : '第三部分') + '</span>'
+      + stateTxt + '</div></article>';
+  }).join('');
+  box.querySelectorAll('.card').forEach(el => {
+    el.onclick = () => openByNo(Number(el.dataset.no));
+  });
+  renderStats();
+}
+
+function openByNo(no) {
+  cur = flat.findIndex(x => x.no === no);
+  if (cur >= 0) renderPanel();
+}
+
+function renderPanel() {
+  const x = flat[cur];
+  const it = x.it;
+  const isObj = it.t === 'mc' || it.t === 'tf';
+  const v = store[keyOf(x.pi, x.qi)] || {};
+  const answered = isObj && v.k !== undefined;
+  const revealed = !isObj && v.s !== undefined;
+
+  const head = '<div class="p-head"><div class="grow">'
+    + '<div class="title">第 ' + x.no + ' 题 · ' + LABEL[it.t] + ' · 课件第 ' + it.p + ' 页</div></div>'
+    + '<button class="close" id="p-close">✕</button></div>';
+
+  let body = '<div class="stem">' + fmt(it.s) + '</div>';
+
+  if (isObj) {
+    body += '<div id="opts">' + it.o.map((t, k) => {
+      const key = it.t === 'tf' ? (k === 0 ? '√' : '×') : 'ABCD'[k];
+      let cls = 'opt';
+      if (answered) {
+        if (k === it.a) cls += ' right';
+        else if (k === v.k) cls += ' wrong';
+        else cls += ' dim';
+      }
+      return '<button class="' + cls + '" data-k="' + k + '">'
+        + '<span class="k">' + key + '</span><span>' + fmt(t) + '</span></button>';
+    }).join('') + '</div>';
+
+    if (answered) {
+      const ok = v.k === it.a;
+      body += '<div class="res ' + (ok ? 'good' : 'bad') + '"><h4>' + (ok ? '✓ 答对了' : '✗ 答错了') + '</h4>'
+        + '<p><b>正确答案：</b>' + (it.t === 'tf' ? (it.a === 0 ? '对' : '错') : 'ABCD'[it.a]) + '</p>'
+        + '<p><b>解析：</b>' + esc(it.w) + '</p></div>';
+    }
+  } else if (it.t === 'fill') {
+    // 填空：把题干里的 ____ 换成输入框，按空判分
+    const parts = it.s.split(/_{2,}/);
+    const nBlank = parts.length - 1;
+    const typed = (Array.isArray(v.typed) && v.typed.length === nBlank)
+      ? v.typed : new Array(nBlank).fill('');
+    const graded = v.s !== undefined;
+    let stem = '<div class="stem">';
+    parts.forEach(function (p, i) {
+      stem += fmt(p);
+      if (i < nBlank) {
+        let cls = 'blank-in';
+        if (graded) cls += eq(typed[i], it.x[i]) ? ' ok' : ' bad';
+        const w = Math.min(14, Math.max(3, String(it.x[i] || '').length + 1));
+        stem += '<input class="' + cls + '" data-b="' + i + '" value="' + esc(typed[i] || '') + '"'
+          + ' style="width:' + w + 'em"' + (graded ? ' disabled' : '') + ' placeholder="?">';
+      }
+    });
+    stem += '</div>';
+    body = stem;
+    if (!graded) {
+      body += '<div class="answer-tip">在上面每个空里输入答案，提交后逐空判分。</div>'
+        + '<button class="btn" id="submit-fill">提交并看答案</button>';
+    } else {
+      const nRight = it.x.filter(function (a, i) { return eq(typed[i], a); }).length;
+      const allOk = nRight === it.x.length;
+      body += '<div class="res ' + (allOk ? 'good' : 'bad') + '"><h4>'
+        + (allOk ? '✓ 全对（' + nRight + '/' + it.x.length + '）'
+                 : '✗ 对了 ' + nRight + '/' + it.x.length + ' 空') + '</h4>'
+        + '<p><b>参考答案：</b></p><ol>'
+        + it.x.map(function (a) { return '<li>' + esc(a) + '</li>'; }).join('') + '</ol></div>';
+      if (!allOk) {
+        body += '<div class="acts"><button class="btn ghost" id="override">我这样写也算对</button></div>';
+      }
+    }
+  } else {
+    // 名词解释 / 问答 / 计算：先打字，再对答案，自评
+    const ansHtml = Array.isArray(it.x)
+      ? '<ol>' + it.x.map(a => '<li>' + esc(a) + '</li>').join('') + '</ol>'
+      : '<p>' + esc(it.x).replace(/\n/g, '<br>') + '</p>';
+    const typed = v.typed || '';
+    body = '<div class="stem">' + fmt(it.s) + '</div>'
+      + '<textarea class="answer-area" id="answer"' + (revealed ? ' disabled' : '')
+      + ' placeholder="在这里写下你的答案（要点即可；不联网、不上传）">' + esc(typed) + '</textarea>';
+    if (!revealed) {
+      body += '<div class="answer-tip">写完点下面按钮，再看参考答案并自评。</div>'
+        + '<button class="btn" id="reveal">提交并看参考答案</button>';
+    } else {
+      body += '<div class="res info"><h4>参考答案</h4>' + ansHtml
+        + '<p style="color:#9499A0;margin-top:8px">对照一下：你写到了哪几条？漏了哪条？</p></div>'
+        + '<div class="acts"><button class="btn" id="yes">我答对了</button>'
+        + '<button class="btn ghost" id="no">基本没答对</button></div>';
+    }
+  }
+
+  body += '<div class="acts"><button class="btn ghost" id="prev">上一题</button>'
+    + '<button class="btn" id="next">' + (cur === flat.length - 1 ? '已是最后一题' : '下一题') + '</button></div>';
+
+  const mask = document.getElementById('mask');
+  mask.innerHTML = '<div class="panel">' + head + '<div class="p-body">' + body + '</div></div>';
+  mask.classList.add('on');
+
+  document.getElementById('p-close').onclick = closePanel;
+  const prev = document.getElementById('prev');
+  const next = document.getElementById('next');
+  if (prev) prev.onclick = () => { if (cur > 0) { cur--; renderPanel(); } };
+  if (next) next.onclick = () => { if (cur < flat.length - 1) { cur++; renderPanel(); } };
+
+  if (isObj) {
+    mask.querySelectorAll('.opt').forEach(b => {
+      b.disabled = answered;
+      b.onclick = () => {
+        const k = Number(b.dataset.k);
+        store[keyOf(x.pi, x.qi)] = { k: k };
+        save();
+        renderPanel();
+        renderGrid();
+      };
+    });
+  } else if (it.t === 'fill') {
+    const sb = document.getElementById('submit-fill');
+    if (sb) sb.onclick = () => {
+      const vals = [].slice.call(mask.querySelectorAll('.blank-in')).map(i => i.value);
+      const ok = vals.every(function (t, i) { return eq(t, it.x[i]); });
+      store[keyOf(x.pi, x.qi)] = { typed: vals, s: ok ? 1 : 0 };
+      save(); renderPanel(); renderGrid();
+    };
+    const ov = document.getElementById('override');
+    if (ov) ov.onclick = () => {
+      const vv = store[keyOf(x.pi, x.qi)] || {};
+      store[keyOf(x.pi, x.qi)] = { typed: vv.typed || [], s: 1 };
+      save(); renderPanel(); renderGrid();
+    };
+  } else {
+    const ta = document.getElementById('answer');
+    if (ta && !revealed) {
+      ta.addEventListener('input', function () {
+        const vv = store[keyOf(x.pi, x.qi)] || {};
+        vv.typed = ta.value;
+        store[keyOf(x.pi, x.qi)] = vv;
+        save();
+      });
+    }
+    const rv = document.getElementById('reveal');
+    if (rv) rv.onclick = () => {
+      const vv = store[keyOf(x.pi, x.qi)] || {};
+      vv.typed = ta ? ta.value : (vv.typed || '');
+      vv.s = -1;
+      store[keyOf(x.pi, x.qi)] = vv;
+      save(); renderPanel(); renderGrid();
+    };
+    const yes = document.getElementById('yes');
+    const no = document.getElementById('no');
+    if (yes) yes.onclick = () => {
+      const vv = store[keyOf(x.pi, x.qi)] || {}; vv.s = 1;
+      store[keyOf(x.pi, x.qi)] = vv; save(); renderPanel(); renderGrid();
+    };
+    if (no) no.onclick = () => {
+      const vv = store[keyOf(x.pi, x.qi)] || {}; vv.s = 0;
+      store[keyOf(x.pi, x.qi)] = vv; save(); renderPanel(); renderGrid();
+    };
+  }
+}
+
+function closePanel() {
+  document.getElementById('mask').classList.remove('on');
+  document.getElementById('mask').innerHTML = '';
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') closePanel();
+  if (cur < 0) return;
+  const n = parseInt(e.key, 10);
+  if (n >= 1 && n <= 4) {
+    const b = document.querySelector('#mask .opt[data-k="' + (n - 1) + '"]');
+    if (b && !b.disabled) b.click();
+  }
+});
+
+document.getElementById('mask').onclick = e => {
+  if (e.target.id === 'mask') closePanel();
+};
+
+document.querySelectorAll('.tab').forEach(t => {
+  t.onclick = () => {
+    document.querySelectorAll('.tab').forEach(o => o.classList.remove('on'));
+    t.classList.add('on');
+    filterPart = Number(t.dataset.part);
+    renderGrid();
+  };
+});
+
+document.querySelectorAll('.chip').forEach(c => {
+  c.onclick = () => {
+    document.querySelectorAll('.chip').forEach(o => o.classList.remove('on'));
+    c.classList.add('on');
+    typeFilter = c.dataset.type || '';
+    renderGrid();
+  };
+});
+
+const input = document.getElementById('q');
+input.addEventListener('input', () => {
+  keyword = input.value.trim();
+  renderGrid();
+});
+
+document.getElementById('reset').onclick = () => {
+  if (!confirm('清除本机所有作答记录？')) return;
+  store = {}; save(); renderGrid(); renderStats();
+};
+
+buildFlat();
+renderGrid();
+</script>
+</body></html>
