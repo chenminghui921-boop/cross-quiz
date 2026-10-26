@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>第三部分　土石方计算与调配</title>
+<style>
+:root{--ink:#18191C;--ink2:#61666D;--ink3:#9499A0;--line:#E9EBEE;--bg:#F5F6F8;--pink:#FB7299}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:15px/1.65 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+header{background:#8B1D1D;color:#fff;padding:20px 0 18px}
+.hin,.wrap{max-width:780px;margin:0 auto;padding:0 16px}
+h1{margin:0 0 6px;font-size:20px}
+.hsub{font-size:13px;color:rgba(255,255,255,.9)}
+.wrap{padding-bottom:120px}
+.idbar{display:flex;gap:10px;align-items:center;background:#fff;border-radius:12px;
+  padding:12px 14px;margin:16px 0;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.idbar label{font-size:14px;color:var(--ink2);white-space:nowrap}
+.idbar input{flex:1;border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;
+  font-size:15px;outline:none;background:#fff}
+.idbar input:focus{border-color:var(--pink)}
+.note{background:#FFF7E6;border:1px solid #FFE0A3;color:#7a5200;border-radius:10px;
+  padding:12px 14px;font-size:13.5px;margin:0 0 16px;line-height:1.75}
+.sec{display:flex;align-items:center;gap:10px;margin:26px 0 6px;color:var(--ink2);font-size:13px}
+.sec b{color:#8B1D1D;font-size:14px}
+.sec i{flex:1;height:1px;background:var(--line);font-style:normal}
+.q{background:#fff;border-radius:14px;padding:16px;margin:12px 0;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.qtop{display:flex;justify-content:space-between;color:var(--ink3);font-size:12.5px;margin-bottom:8px}
+.qno{font-weight:700;color:#8B1D1D}
+.qs{font-weight:600;line-height:1.65;white-space:pre-wrap;margin-bottom:12px}
+.opt{display:flex;gap:10px;align-items:flex-start;border:1.5px solid var(--line);border-radius:10px;
+  padding:11px 13px;margin:8px 0;cursor:pointer;background:#fff;font-size:14.5px;line-height:1.5}
+.opt:hover{border-color:#D7DBE0}
+.opt.on{border-color:#8B1D1D;background:#FBF3F2}
+.opt .k{font-weight:700;color:var(--ink2);min-width:18px}
+.opt.on .k{color:#8B1D1D}
+.paper{border:1.5px dashed #D7DBE0;border-radius:10px;padding:11px 13px;color:#8A8F98;font-size:13.5px;
+  background:#FAFBFC}
+.paper b{color:#61666D}
+.bar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);
+  padding:10px 16px;z-index:20}
+.bar .in{max-width:780px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.bar .p{flex:1;font-size:13px;color:var(--ink2)}
+.btn{border:0;border-radius:10px;background:#8B1D1D;color:#fff;font-size:15px;
+  font-weight:600;padding:11px 22px;cursor:pointer}
+.btn:disabled{opacity:.5}
+.prog{height:5px;background:#EDEFF2;border-radius:3px;overflow:hidden;margin-top:6px;max-width:780px;margin-left:auto;margin-right:auto}
+.prog i{display:block;height:100%;background:#8B1D1D}
+.done{background:#fff;border-radius:14px;padding:18px;margin:16px 0;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.code{font:14px/1.5 ui-monospace,Menlo,Consolas,monospace;background:#F7F7F9;
+  border:1px dashed #C9CCD1;border-radius:10px;padding:12px;word-break:break-all;margin:10px 0;user-select:all}
+.foot{color:#9AA0AA;font-size:12px;text-align:center;margin-top:26px;line-height:1.9}
+</style></head>
+<body>
+<header><div class="hin">
+  <h1 id="ptitle">第三部分　土石方计算与调配</h1>
+  <div class="hsub" id="pmeta"></div>
+</div></header>
+<div class="wrap">
+  <div class="idbar"><label>学号</label>
+    <input id="sid" placeholder="填学号（3–20 位数字或字母）" autocomplete="off"></div>
+  <div class="note">
+    本页<b>不显示任何答案</b>。选择题、判断题直接在手机上作答；填空、名词解释、问答、计算题请写在<b>答题纸</b>上。
+    交卷后会出现一行<b>递交码</b>，复制发给老师即可。
+  </div>
+  <div id="done" class="done" style="display:none"></div>
+  <div id="list"></div>
+  <div class="foot">横断面设计 · 第三部分　土石方计算与调配</div>
+</div>
+<div class="bar"><div class="in"><div class="p" id="pcount"></div>
+  <button class="btn" id="submit">交卷</button></div></div>
+<div class="prog"><i id="pfill" style="width:0"></i></div>
+<script>
+const DATA = {"id": 3, "title": "第三部分　土石方计算与调配", "pages": "104–111", "qs": [{"t": "fill", "type": "填空", "s": "横断面面积计算常用的两种方法是____和____。", "p": 104, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "积距法的总面积公式为 A=____，其中 b 表示____，hi 表示____。", "p": 104, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "坐标法的面积公式为 A=____。", "p": 104, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "当相邻两断面均为填方或均为挖方且面积大小相近时，可假定两断面之间为____，其体积公式为 V=____。", "p": 104, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "当相邻两断面面积相差较大时，两断面之间更接近____，其体积公式为 V=____。", "p": 104, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "土石方调配的目的是确定____的来源、____的去向，以及计价土石方的数量和运量。", "p": 104, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "土石方调配的第一条原则是：半填半挖断面中，先____平衡，再____调配。", "p": 104, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "纵向调运的距离应小于____。", "p": 104, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "经济运距的计算公式为 Lj=____，其中 B 表示____，T 表示____，Lm 表示____。", "p": 104, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "一般人工运输的免费运距为____米，汽车运输的免费运距为____公里。", "p": 104, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "土石方调配中，填方＝本桩利用＋____＝横向调运＋纵向调运＋____。", "p": 104, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "挖方＝本桩利用＋____＝横向调运＋纵向调运＋____。", "p": 104, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "挖方＋借方＝____＋弃方。", "p": 104, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "计价土石方＝____＋____。", "p": 104, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "所有挖方计价，填方中的路外借土要计价，____不重复计价。", "p": 104, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "定额中“天然密实土”是指____，“夯实土”是指____，“松填土”是指____。", "p": 104, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "土方松实系数换算表中，自然方为 1，松方为____，实方为____。", "p": 104, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "生产上多采用____调配法进行土石方调配。", "p": 104, "sec": "填空"}, {"t": "mc", "type": "选择", "s": "横断面面积计算中，积距法的总面积公式为（ ）。", "p": 105, "sec": "选择", "o": ["A=bΣhi", "A=1/2Σ(xi·yi+1－xi-1·yi)", "A=1/2(F1+F2)L", "A=1/3(F1+F2)L"], "oi": 0}, {"t": "mc", "type": "选择", "s": "当相邻两断面面积相差较大时，土石方体积计算应采用（ ）。", "p": 105, "sec": "选择", "o": ["平均断面法", "棱台公式", "积距法", "坐标法"], "oi": 1}, {"t": "mc", "type": "选择", "s": "经济运距的计算公式 Lj=B/T+Lm 中，B 表示（ ）。", "p": 105, "sec": "选择", "o": ["远运运费单价", "借土单价", "免费运距", "调配方数"], "oi": 2}, {"t": "mc", "type": "选择", "s": "一般汽车运输的免费运距为（ ）。", "p": 105, "sec": "选择", "o": ["20 米", "100 米", "1 公里", "5 公里"], "oi": 3}, {"t": "mc", "type": "选择", "s": "以下哪个等式是正确的？", "p": 105, "sec": "选择", "o": ["填方＝本桩利用＋挖余", "挖方＝本桩利用＋填缺", "挖方＋借方＝填方＋弃方", "计价土石方＝填方＋借方"], "oi": 4}, {"t": "mc", "type": "选择", "s": "关于计价土石方，以下说法正确的是（ ）。", "p": 106, "sec": "选择", "o": ["计价土石方＝挖方数量＋填方数量", "移挖作填的土方需要重复计价", "计价土石方＝挖方数量＋借方数量", "所有填方都需要计价"], "oi": 5}, {"t": "mc", "type": "选择", "s": "土方松实系数换算表中，自然方为 1，松方为（ ）。", "p": 106, "sec": "选择", "o": ["0.85", "1.33", "1.53", "1.07"], "oi": 6}, {"t": "mc", "type": "选择", "s": "土石方调配时，首先应考虑的是（ ）。", "p": 106, "sec": "选择", "o": ["纵向调运", "横向平衡", "借方", "弃方"], "oi": 7}, {"t": "mc", "type": "选择", "s": "以下哪种情况应优先考虑上下线的土方竖向调运？", "p": 106, "sec": "选择", "o": ["直线路段", "回头曲线路段", "桥梁路段", "隧道路段"], "oi": 8}, {"t": "mc", "type": "选择", "s": "土石方计算表调配法中，复核检查的等式不包括（ ）。", "p": 106, "sec": "选择", "o": ["填方＝本桩利用＋填缺", "挖方＝本桩利用＋挖余", "挖方＋借方＝填方＋弃方", "填方＝借方＋弃方"], "oi": 9}, {"t": "tf", "type": "判断", "s": "积距法适合用计算机程序计算，坐标法适合手工计算。", "p": 107, "sec": "判断", "o": ["对", "错"], "oi": 10}, {"t": "tf", "type": "判断", "s": "平均断面法适用于相邻两断面面积相差较大的情况。", "p": 107, "sec": "判断", "o": ["对", "错"], "oi": 11}, {"t": "tf", "type": "判断", "s": "经济运距是指按费用计算的纵向调运的最大限度。", "p": 107, "sec": "判断", "o": ["对", "错"], "oi": 12}, {"t": "tf", "type": "判断", "s": "免费运距是指在这个距离之内运输不额外计费。", "p": 107, "sec": "判断", "o": ["对", "错"], "oi": 13}, {"t": "tf", "type": "判断", "s": "土石方调配时，应先纵向调配，再横向平衡。", "p": 107, "sec": "判断", "o": ["对", "错"], "oi": 14}, {"t": "tf", "type": "判断", "s": "计价土石方等于挖方数量加借方数量。", "p": 107, "sec": "判断", "o": ["对", "错"], "oi": 15}, {"t": "tf", "type": "判断", "s": "移挖作填的土方需要重复计价。", "p": 107, "sec": "判断", "o": ["对", "错"], "oi": 16}, {"t": "tf", "type": "判断", "s": "天然密实土的体积大于夯实土的体积。", "p": 107, "sec": "判断", "o": ["对", "错"], "oi": 17}, {"t": "tf", "type": "判断", "s": "1 立方米天然密实土挖松后变成 1.33 立方米松方。", "p": 107, "sec": "判断", "o": ["对", "错"], "oi": 18}, {"t": "tf", "type": "判断", "s": "石方和土方可以混合调配，不需要分开。", "p": 107, "sec": "判断", "o": ["对", "错"], "oi": 19}, {"t": "term", "type": "名词解释", "s": "经济运距", "p": 108, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "免费运距", "p": 108, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "本桩利用", "p": 108, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "填缺", "p": 108, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "挖余", "p": 108, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "计价土石方", "p": 108, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "天然密实土", "p": 108, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "夯实土", "p": 108, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "松填土", "p": 108, "sec": "名词解释"}, {"t": "calc", "type": "计算", "s": "题目一：某公路路基施工中，有一段填方路堤需要填筑。已知填方压实后的体积（实方）为 8000 m³，采用土方填筑，从取土场挖取天然密实土（自然方）来填筑。（土方松实系数：自然方 1，松方 1.33，实方 0.85）\n（1）需要从取土场挖取多少自然方的土？\n（2）挖出来的土堆放在路边，松方体积是多少？\n（3）如果利用路段本身挖方产生的天然密实土来填筑，请分析整个过程中体积是如何变化的。", "p": 109, "sec": "计算"}, {"t": "calc", "type": "计算", "s": "题目二：某路段相邻两个断面的挖方面积分别为 F1=50 m² 和 F2=60 m²，两断面之间的距离 L=20 m。\n（1）用平均断面法计算两断面之间的土方体积。\n（2）如果 F1=30 m²、F2=90 m²，面积相差较大，用棱台公式计算体积。（m=F1/F2，F2>F1）", "p": 110, "sec": "计算"}, {"t": "qa", "type": "问答", "s": "简述横断面面积计算的两种方法，并说明各自的优缺点和适用场景。", "p": 111, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "简述土石方数量计算中平均断面法和棱台公式的适用条件。", "p": 111, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "土石方调配的目的是什么？调配应遵循哪些原则？", "p": 111, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "什么是经济运距？如何计算？它在土石方调配中有什么意义？", "p": 111, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "土石方计算表调配法分哪几个步骤？请简要说明每个步骤的内容。", "p": 111, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "复核检查土石方调配时，有哪三个等式必须成立？请写出来并解释其含义。", "p": 111, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "什么是计价土石方？为什么移挖作填不重复计价？", "p": 111, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "简述土方松实系数换算表中自然方、松方、实方三者之间的关系，并说明为什么算土方量时必须考虑松实系数换算。", "p": 111, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "土石方调配时，为什么要考虑桥涵位置和路线纵坡的影响？为什么要尽量少占农田？", "p": 111, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "请结合实例说明土石方计算表调配法的应用过程。", "p": 111, "sec": "问答"}], "obj": [0, 1, 1, 2, 2, 2, 1, 1, 1, 3, 1, 1, 0, 0, 1, 0, 1, 0, 0, 1]};
+const PART = DATA.id;
+const P = DATA;
+let answers = new Array(P.obj.length).fill(-1);
+let submitted = false;
+const startedAt = Date.now();
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const b64e = s => btoa(unescape(encodeURIComponent(s))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+
+$('ptitle').textContent = P.title;
+$('pmeta').textContent = '共 ' + P.qs.length + ' 题（客观 ' + P.obj.length + ' 题可机读）· 课件第 ' + P.pages + ' 页';
+
+let html = '';
+let lastSec = '';
+P.qs.forEach((q, idx) => {
+  if (q.sec !== lastSec) {
+    lastSec = q.sec;
+    html += '<div class="sec"><b>' + esc(q.sec) + '</b><i></i></div>';
+  }
+  html += '<section class="q"><div class="qtop"><span class="qno">' + (idx + 1) + '</span>'
+    + '<span>' + q.type + ' · 课件 P' + q.p + '</span></div>'
+    + '<div class="qs">' + esc(q.s) + '</div>';
+  if (q.oi !== undefined) {
+    html += q.o.map((t, k) =>
+      '<div class="opt" data-o="' + q.oi + '" data-k="' + k + '">'
+      + '<span class="k">' + (q.type === '判断' ? (k === 0 ? '√' : '×') : 'ABCD'[k]) + '</span>'
+      + '<span>' + esc(t) + '</span></div>').join('');
+  } else {
+    html += '<div class="paper">本题请写在<b>答题纸</b>上（答题纸按题号作答，本题不机读）</div>';
+  }
+  html += '</section>';
+});
+$('list').innerHTML = html;
+
+document.querySelectorAll('.opt').forEach(el => {
+  el.onclick = () => {
+    if (submitted) return;
+    const oi = Number(el.dataset.o);
+    answers[oi] = Number(el.dataset.k);
+    document.querySelectorAll('.opt[data-o="' + oi + '"]').forEach(x => x.classList.remove('on'));
+    el.classList.add('on');
+    update();
+  };
+});
+
+function update() {
+  const done = answers.filter(a => a >= 0).length;
+  $('pcount').textContent = submitted ? '已交卷' : '客观题已答 ' + done + ' / ' + answers.length;
+  $('pfill').style.width = Math.round(done / answers.length * 100) + '%';
+}
+
+$('submit').onclick = () => {
+  const sid = ($('sid').value || '').trim().replace(/\s+/g, '');
+  if (!/^[0-9A-Za-z_-]{3,20}$/.test(sid)) { alert('请先填学号（3–20 位数字或字母）'); $('sid').focus(); return; }
+  const blank = answers.filter(a => a < 0).length;
+  if (blank && !confirm('还有 ' + blank + ' 道客观题没答，确定交卷？')) return;
+
+  submitted = true;
+  const sec = Math.round((Date.now() - startedAt) / 1000);
+  const code = b64e([sid, PART, sec, answers.map(a => a < 0 ? 'x' : String(a)).join('')].join('|'));
+  $('done').style.display = 'block';
+  $('done').innerHTML = '<h3 style="margin:0 0 8px">已交卷</h3>'
+    + '<div style="color:#61666D;font-size:14px">学号 <b>' + esc(sid) + '</b> · 第' + PART
+    + '部分 · 用时 ' + Math.floor(sec / 60) + ' 分 ' + (sec % 60) + ' 秒</div>'
+    + '<div class="code">' + code + '</div>'
+    + '<button class="btn" id="copy">复制递交码</button>'
+    + '<div style="color:#9499A0;font-size:12.5px;margin-top:10px">'
+    + '把这一行发给老师；<b>答题纸</b>另交。</div>';
+  $('copy').onclick = () => {
+    if (navigator.clipboard) navigator.clipboard.writeText(code).then(() => alert('已复制'), () => alert('请长按手动复制'));
+    else alert('请长按手动复制');
+  };
+  document.querySelectorAll('.opt').forEach(x => x.style.pointerEvents = 'none');
+  $('submit').disabled = true;
+  update();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+update();
+</script>
+</body></html>
