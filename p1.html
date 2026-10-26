@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>第一部分　横断面组成、车道与路肩</title>
+<style>
+:root{--ink:#18191C;--ink2:#61666D;--ink3:#9499A0;--line:#E9EBEE;--bg:#F5F6F8;--pink:#FB7299}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font:15px/1.65 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
+header{background:#8B1D1D;color:#fff;padding:20px 0 18px}
+.hin,.wrap{max-width:780px;margin:0 auto;padding:0 16px}
+h1{margin:0 0 6px;font-size:20px}
+.hsub{font-size:13px;color:rgba(255,255,255,.9)}
+.wrap{padding-bottom:120px}
+.idbar{display:flex;gap:10px;align-items:center;background:#fff;border-radius:12px;
+  padding:12px 14px;margin:16px 0;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.idbar label{font-size:14px;color:var(--ink2);white-space:nowrap}
+.idbar input{flex:1;border:1.5px solid var(--line);border-radius:8px;padding:9px 12px;
+  font-size:15px;outline:none;background:#fff}
+.idbar input:focus{border-color:var(--pink)}
+.note{background:#FFF7E6;border:1px solid #FFE0A3;color:#7a5200;border-radius:10px;
+  padding:12px 14px;font-size:13.5px;margin:0 0 16px;line-height:1.75}
+.sec{display:flex;align-items:center;gap:10px;margin:26px 0 6px;color:var(--ink2);font-size:13px}
+.sec b{color:#8B1D1D;font-size:14px}
+.sec i{flex:1;height:1px;background:var(--line);font-style:normal}
+.q{background:#fff;border-radius:14px;padding:16px;margin:12px 0;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.qtop{display:flex;justify-content:space-between;color:var(--ink3);font-size:12.5px;margin-bottom:8px}
+.qno{font-weight:700;color:#8B1D1D}
+.qs{font-weight:600;line-height:1.65;white-space:pre-wrap;margin-bottom:12px}
+.opt{display:flex;gap:10px;align-items:flex-start;border:1.5px solid var(--line);border-radius:10px;
+  padding:11px 13px;margin:8px 0;cursor:pointer;background:#fff;font-size:14.5px;line-height:1.5}
+.opt:hover{border-color:#D7DBE0}
+.opt.on{border-color:#8B1D1D;background:#FBF3F2}
+.opt .k{font-weight:700;color:var(--ink2);min-width:18px}
+.opt.on .k{color:#8B1D1D}
+.paper{border:1.5px dashed #D7DBE0;border-radius:10px;padding:11px 13px;color:#8A8F98;font-size:13.5px;
+  background:#FAFBFC}
+.paper b{color:#61666D}
+.bar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);
+  padding:10px 16px;z-index:20}
+.bar .in{max-width:780px;margin:0 auto;display:flex;align-items:center;gap:12px}
+.bar .p{flex:1;font-size:13px;color:var(--ink2)}
+.btn{border:0;border-radius:10px;background:#8B1D1D;color:#fff;font-size:15px;
+  font-weight:600;padding:11px 22px;cursor:pointer}
+.btn:disabled{opacity:.5}
+.prog{height:5px;background:#EDEFF2;border-radius:3px;overflow:hidden;margin-top:6px;max-width:780px;margin-left:auto;margin-right:auto}
+.prog i{display:block;height:100%;background:#8B1D1D}
+.done{background:#fff;border-radius:14px;padding:18px;margin:16px 0;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.code{font:14px/1.5 ui-monospace,Menlo,Consolas,monospace;background:#F7F7F9;
+  border:1px dashed #C9CCD1;border-radius:10px;padding:12px;word-break:break-all;margin:10px 0;user-select:all}
+.foot{color:#9AA0AA;font-size:12px;text-align:center;margin-top:26px;line-height:1.9}
+</style></head>
+<body>
+<header><div class="hin">
+  <h1 id="ptitle">第一部分　横断面组成、车道与路肩</h1>
+  <div class="hsub" id="pmeta"></div>
+</div></header>
+<div class="wrap">
+  <div class="idbar"><label>学号</label>
+    <input id="sid" placeholder="填学号（3–20 位数字或字母）" autocomplete="off"></div>
+  <div class="note">
+    本页<b>不显示任何答案</b>。选择题、判断题直接在手机上作答；填空、名词解释、问答、计算题请写在<b>答题纸</b>上。
+    交卷后会出现一行<b>递交码</b>，复制发给老师即可。
+  </div>
+  <div id="done" class="done" style="display:none"></div>
+  <div id="list"></div>
+  <div class="foot">横断面设计 · 第一部分　横断面组成、车道与路肩</div>
+</div>
+<div class="bar"><div class="in"><div class="p" id="pcount"></div>
+  <button class="btn" id="submit">交卷</button></div></div>
+<div class="prog"><i id="pfill" style="width:0"></i></div>
+<script>
+const DATA = {"id": 1, "title": "第一部分　横断面组成、车道与路肩", "pages": "45–51", "qs": [{"t": "fill", "type": "填空", "s": "公路路基宽度为____与____之和，当设有中间带、加（减）速车道、爬坡车道、紧急停车带、非机动车道等时，应计入这部分宽度。", "p": 45, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "公路横断面按整体布局可分为____和____两大类，其中双幅又分为____断面和____断面。", "p": 45, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "单幅单车道适用于____级公路，单幅双车道适用于____级公路，双幅多车道适用于____和____级公路。", "p": 45, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "城市道路横断面的组成包括行车道、分隔带、绿化带、____和____等。", "p": 45, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "高速公路和一级公路的路基标准横断面中，中间带由____和两条____组成。", "p": 45, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "城市道路按路幅布置类型可分为四种：单幅路旧称____，双幅路旧称____，三幅路旧称____，四幅路旧称____。", "p": 45, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "机动车道宽度根据设计车辆宽度、设计交通量、交通组成和____确定。", "p": 45, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "行车道宽度由____和____两部分组成，其中富余宽度主要与____有关。", "p": 45, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "高速公路和一级公路当车道数为双车道以上时，应按____增加。", "p": 45, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "路肩分为____和____，其中能承受车辆荷载、供临时停车使用的是____。", "p": 45, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "高速公路右侧硬路肩的一般值为____米，土路肩的一般值为____米。", "p": 45, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "八车道以上高速公路宜设置左侧硬路肩，其宽度不应小于____米。", "p": 45, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "高速公路右侧硬路肩宽度小于____米时，应设置紧急停车带，其宽度应为____米，有效长度不应小于____米，间距不宜大于____米。", "p": 45, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "路拱横坡度的设置目的是____。", "p": 45, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "路拱的基本形式有____、____和____三种，其中高等级公路采用____型路拱。", "p": 45, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "水泥混凝土路面宜采用____型路拱。", "p": 45, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "土路肩横坡一般比路面大____，曲线段外侧的土路肩横坡应做成____的反向横坡。", "p": 45, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "人行道横坡宜采用____坡，坡度为____。", "p": 45, "sec": "填空"}, {"t": "tf", "type": "判断", "s": "公路路基宽度就是车道宽度与路肩宽度之和，不包含中间带宽度。", "p": 46, "sec": "判断", "o": ["对", "错"], "oi": 0}, {"t": "tf", "type": "判断", "s": "分离式断面和整体式断面都属于双幅公路的范畴。", "p": 46, "sec": "判断", "o": ["对", "错"], "oi": 1}, {"t": "tf", "type": "判断", "s": "城市道路中，四幅路的安全性最高，但占地最宽、造价最高。", "p": 46, "sec": "判断", "o": ["对", "错"], "oi": 2}, {"t": "tf", "type": "判断", "s": "公路和城市道路的本质区别在于服务对象不同，公路服务“车”，城市道路服务“人”。", "p": 46, "sec": "判断", "o": ["对", "错"], "oi": 3}, {"t": "tf", "type": "判断", "s": "硬路肩可以作为超车道使用，以提高通行效率。", "p": 46, "sec": "判断", "o": ["对", "错"], "oi": 4}, {"t": "tf", "type": "判断", "s": "左侧硬路肩宽度不包含左侧路缘带宽度。", "p": 46, "sec": "判断", "o": ["对", "错"], "oi": 5}, {"t": "tf", "type": "判断", "s": "路拱横坡坡度越大，对行车越有利。", "p": 46, "sec": "判断", "o": ["对", "错"], "oi": 6}, {"t": "tf", "type": "判断", "s": "折线型路拱适用于沥青混凝土路面。", "p": 46, "sec": "判断", "o": ["对", "错"], "oi": 7}, {"t": "tf", "type": "判断", "s": "中间带由中央分隔带和两条右侧路缘带组成。", "p": 46, "sec": "判断", "o": ["对", "错"], "oi": 8}, {"t": "tf", "type": "判断", "s": "城市道路的两侧分车带用于分隔机动车和非机动车。", "p": 46, "sec": "判断", "o": ["对", "错"], "oi": 9}, {"t": "mc", "type": "选择", "s": "以下哪种路幅布置类型适用于高速公路和一级公路？", "p": 47, "sec": "选择", "o": ["单幅单车道", "单幅双车道", "双幅多车道", "单幅多车道"], "oi": 10}, {"t": "mc", "type": "选择", "s": "城市道路中，旧称“三块板”的是哪种布置类型？", "p": 47, "sec": "选择", "o": ["单幅路", "双幅路", "三幅路", "四幅路"], "oi": 11}, {"t": "mc", "type": "选择", "s": "设计速度为 120 km/h 时，公路车道宽度一般取多少米？", "p": 47, "sec": "选择", "o": ["3.00", "3.25", "3.50", "3.75"], "oi": 12}, {"t": "mc", "type": "选择", "s": "高速公路右侧硬路肩宽度小于多少米时，应设置紧急停车带？", "p": 47, "sec": "选择", "o": ["2.00", "2.50", "3.00", "3.50"], "oi": 13}, {"t": "mc", "type": "选择", "s": "以下哪种路面类型对应的路拱横坡度最小？", "p": 47, "sec": "选择", "o": ["水泥混凝土路面", "碎石路面", "低级路面", "半整齐石块路面"], "oi": 14}, {"t": "mc", "type": "选择", "s": "中间带的组成部分包括（ ）。", "p": 48, "sec": "选择", "o": ["中央分隔带", "左侧路缘带", "右侧路缘带", "A 和 B"], "oi": 15}, {"t": "mc", "type": "选择", "s": "关于硬路肩的作用，以下说法错误的是（ ）。", "p": 48, "sec": "选择", "o": ["供临时停车", "作为超车道使用", "提供侧向余宽", "为养护提供场地"], "oi": 16}, {"t": "mc", "type": "选择", "s": "路拱横坡度的确定与以下哪个因素无关？", "p": 48, "sec": "选择", "o": ["路面结构类型", "车道宽度", "自然条件", "设计车辆颜色"], "oi": 17}, {"t": "term", "type": "名词解释", "s": "路拱", "p": 49, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "中间带", "p": 49, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "硬路肩", "p": 49, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "分离式断面", "p": 49, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "单幅路", "p": 49, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "紧急停车带", "p": 49, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "路缘带", "p": 49, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "土路肩", "p": 49, "sec": "名词解释"}, {"t": "qa", "type": "问答", "s": "简述公路横断面的组成，并说明单幅路和双幅路的主要区别。", "p": 50, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "城市道路横断面有哪四种布置类型？请分别说明各自的特点和适用条件。", "p": 50, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "路肩有哪些作用？硬路肩和土路肩有何区别？", "p": 50, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "简述行车道宽度的确定方法，并说明设计速度与车道宽度之间的关系。", "p": 50, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "什么是中间带？它由哪几部分组成？设置中间带的目的是什么？", "p": 50, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "简述路拱横坡度的设置目的，并说明确定路拱横坡度时需要考虑哪些因素。", "p": 51, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "分离式断面和整体式断面在路肩设置上有何不同？为什么分离式断面需要设置左侧硬路肩？", "p": 51, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "什么是紧急停车带？在什么条件下需要设置？其宽度、长度和间距有何规定？", "p": 51, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "公路和城市道路的本质区别是什么？请从服务对象、功能定位、横断面组成和管理归属四个方面进行说明。", "p": 51, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "请结合实例说明城市道路横断面设计中各组成部分的宽度和横坡是如何确定的。", "p": 51, "sec": "问答"}], "obj": [1, 0, 0, 0, 1, 1, 1, 1, 1, 0, 2, 2, 3, 1, 0, 3, 1, 3]};
+const PART = DATA.id;
+const P = DATA;
+let answers = new Array(P.obj.length).fill(-1);
+let submitted = false;
+const startedAt = Date.now();
+
+const $ = id => document.getElementById(id);
+const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+const b64e = s => btoa(unescape(encodeURIComponent(s))).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,'');
+
+$('ptitle').textContent = P.title;
+$('pmeta').textContent = '共 ' + P.qs.length + ' 题（客观 ' + P.obj.length + ' 题可机读）· 课件第 ' + P.pages + ' 页';
+
+let html = '';
+let lastSec = '';
+P.qs.forEach((q, idx) => {
+  if (q.sec !== lastSec) {
+    lastSec = q.sec;
+    html += '<div class="sec"><b>' + esc(q.sec) + '</b><i></i></div>';
+  }
+  html += '<section class="q"><div class="qtop"><span class="qno">' + (idx + 1) + '</span>'
+    + '<span>' + q.type + ' · 课件 P' + q.p + '</span></div>'
+    + '<div class="qs">' + esc(q.s) + '</div>';
+  if (q.oi !== undefined) {
+    html += q.o.map((t, k) =>
+      '<div class="opt" data-o="' + q.oi + '" data-k="' + k + '">'
+      + '<span class="k">' + (q.type === '判断' ? (k === 0 ? '√' : '×') : 'ABCD'[k]) + '</span>'
+      + '<span>' + esc(t) + '</span></div>').join('');
+  } else {
+    html += '<div class="paper">本题请写在<b>答题纸</b>上（答题纸按题号作答，本题不机读）</div>';
+  }
+  html += '</section>';
+});
+$('list').innerHTML = html;
+
+document.querySelectorAll('.opt').forEach(el => {
+  el.onclick = () => {
+    if (submitted) return;
+    const oi = Number(el.dataset.o);
+    answers[oi] = Number(el.dataset.k);
+    document.querySelectorAll('.opt[data-o="' + oi + '"]').forEach(x => x.classList.remove('on'));
+    el.classList.add('on');
+    update();
+  };
+});
+
+function update() {
+  const done = answers.filter(a => a >= 0).length;
+  $('pcount').textContent = submitted ? '已交卷' : '客观题已答 ' + done + ' / ' + answers.length;
+  $('pfill').style.width = Math.round(done / answers.length * 100) + '%';
+}
+
+$('submit').onclick = () => {
+  const sid = ($('sid').value || '').trim().replace(/\s+/g, '');
+  if (!/^[0-9A-Za-z_-]{3,20}$/.test(sid)) { alert('请先填学号（3–20 位数字或字母）'); $('sid').focus(); return; }
+  const blank = answers.filter(a => a < 0).length;
+  if (blank && !confirm('还有 ' + blank + ' 道客观题没答，确定交卷？')) return;
+
+  submitted = true;
+  const sec = Math.round((Date.now() - startedAt) / 1000);
+  const code = b64e([sid, PART, sec, answers.map(a => a < 0 ? 'x' : String(a)).join('')].join('|'));
+  $('done').style.display = 'block';
+  $('done').innerHTML = '<h3 style="margin:0 0 8px">已交卷</h3>'
+    + '<div style="color:#61666D;font-size:14px">学号 <b>' + esc(sid) + '</b> · 第' + PART
+    + '部分 · 用时 ' + Math.floor(sec / 60) + ' 分 ' + (sec % 60) + ' 秒</div>'
+    + '<div class="code">' + code + '</div>'
+    + '<button class="btn" id="copy">复制递交码</button>'
+    + '<div style="color:#9499A0;font-size:12.5px;margin-top:10px">'
+    + '把这一行发给老师；<b>答题纸</b>另交。</div>';
+  $('copy').onclick = () => {
+    if (navigator.clipboard) navigator.clipboard.writeText(code).then(() => alert('已复制'), () => alert('请长按手动复制'));
+    else alert('请长按手动复制');
+  };
+  document.querySelectorAll('.opt').forEach(x => x.style.pointerEvents = 'none');
+  $('submit').disabled = true;
+  update();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+};
+
+update();
+</script>
+</body></html>
