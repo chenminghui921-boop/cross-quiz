@@ -1,46 +1,70 @@
 <!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#FB7299">
 <title>第一部分　横断面组成、车道与路肩</title>
 <style>
-:root{--ink:#18191C;--ink2:#61666D;--ink3:#9499A0;--line:#E9EBEE;--bg:#F5F6F8;--pink:#FB7299}
+:root{--pink:#FB7299;--pink-d:#E45C82;--ink:#18191C;--ink2:#61666D;--ink3:#9499A0;
+  --line:#E9EBEE;--bg:#F5F6F8;--ok:#2BA471;--bad:#D54941}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:var(--bg);color:var(--ink);
   font:15px/1.68 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
-header{background:#8B1D1D;color:#fff;padding:20px 0 18px}
+header{background:var(--pink);color:#fff;padding:20px 0 18px}
 .hin,.wrap{max-width:780px;margin:0 auto;padding:0 16px}
 h1{margin:0 0 6px;font-size:20px}
-.hsub{font-size:13px;color:rgba(255,255,255,.9)}
-.wrap{padding-bottom:100px}
-.note{background:#FFF7E6;border:1px solid #FFE0A3;color:#7a5200;border-radius:10px;
+.hsub{font-size:13px;color:rgba(255,255,255,.92)}
+.wrap{padding-bottom:110px}
+.note{background:#FFF4F7;border:1px solid #FFD7E3;color:#8a3550;border-radius:10px;
   padding:12px 14px;font-size:13.5px;margin:16px 0;line-height:1.75}
 .sec{display:flex;align-items:center;gap:10px;margin:26px 0 6px;color:var(--ink2);font-size:13px}
-.sec b{color:#8B1D1D;font-size:14px}
+.sec b{color:var(--pink);font-size:14px}
 .sec i{flex:1;height:1px;background:var(--line);font-style:normal}
 .q{background:#fff;border-radius:14px;padding:16px;margin:12px 0;box-shadow:0 1px 3px rgba(0,0,0,.05)}
 .qtop{display:flex;justify-content:space-between;color:var(--ink3);font-size:12.5px;margin-bottom:8px}
-.qno{font-weight:700;color:#8B1D1D}
+.qno{font-weight:700;color:var(--pink)}
 .qs{font-weight:600;line-height:1.68;margin-bottom:12px}
 .blank-in{width:3.2em;border:0;border-bottom:1.5px solid #A9AEB5;background:transparent;
   font:inherit;font-weight:600;text-align:center;padding:0 2px;margin:0 3px;border-radius:0}
 .blank-in:focus{outline:none;border-color:var(--pink);background:#FFF4F7}
+.blank-in.ok{border-color:var(--ok);background:#F0FAF5}
+.blank-in.bad{border-color:var(--bad);background:#FEF3F2}
 .opt{display:flex;gap:10px;align-items:flex-start;border:1.5px solid var(--line);border-radius:10px;
   padding:11px 13px;margin:8px 0;cursor:pointer;background:#fff;font-size:14.5px;line-height:1.5}
 .opt:hover{border-color:#D7DBE0}
-.opt.on{border-color:#8B1D1D;background:#FBF3F2}
+.opt.on{border-color:var(--pink);background:#FFF4F7}
+.opt.right{border-color:var(--ok);background:#F0FAF5}
+.opt.wrong{border-color:var(--bad);background:#FEF3F2}
+.opt.dim{opacity:.55}
 .opt .k{font-weight:700;color:var(--ink2);min-width:18px}
-.opt.on .k{color:#8B1D1D}
+.opt.on .k{color:var(--pink)}
+.opt.right .k{color:var(--ok)}
+.opt.wrong .k{color:var(--bad)}
 textarea{width:100%;min-height:92px;border:1.5px solid var(--line);border-radius:10px;padding:11px;
   font:15px/1.65 inherit;resize:vertical;background:#FCFCFD;outline:none}
 textarea:focus{border-color:var(--pink);background:#fff}
+.res{margin-top:12px;padding:13px;border-radius:10px;font-size:14.3px}
+.res.good{background:#F0FAF5;border:1px solid #C9ECD9}
+.res.bad{background:#FEF3F2;border:1px solid #F7D5D2}
+.res.info{background:#FAFBFC;border:1px solid #E8EAED}
+.res h4{margin:0 0 8px;font-size:15px}
+.res ol{margin:6px 0 6px 20px;padding:0}
+.res li{margin:4px 0}
+.res p{margin:6px 0}
+.score{background:#fff;border-radius:14px;padding:18px;margin:16px 0;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.score .big{font-size:34px;font-weight:700;color:var(--pink);line-height:1.1}
+.score .row{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.score .meta{color:var(--ink2);font-size:13px;margin-top:6px}
 .bar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);
   padding:10px 16px;z-index:20}
 .bar .in{max-width:780px;margin:0 auto;display:flex;align-items:center;gap:12px}
 .bar .p{flex:1;font-size:13px;color:var(--ink2)}
-.bar a{font-size:13px;color:var(--pink);text-decoration:none}
+.btn{border:0;border-radius:10px;background:var(--pink);color:#fff;font-size:15px;
+  font-weight:600;padding:11px 20px;cursor:pointer}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:#fff;color:var(--pink);border:1.5px solid var(--pink)}
 .prog{height:5px;background:#EDEFF2;border-radius:3px;overflow:hidden;margin-top:6px;
   max-width:780px;margin-left:auto;margin-right:auto}
-.prog i{display:block;height:100%;background:#8B1D1D;transition:width .2s}
+.prog i{display:block;height:100%;background:var(--pink);transition:width .2s}
 .foot{color:#9AA0AA;font-size:12px;text-align:center;margin-top:26px;line-height:1.9}
 </style></head>
 <body>
@@ -50,119 +74,216 @@ textarea:focus{border-color:var(--pink);background:#fff}
 </div></header>
 <div class="wrap">
   <div class="note">
-    直接在本页作答：选择题点选，填空题在横线上输入，名词解释 / 问答 / 计算在题下文本框里写。
-    <b>本页不显示答案</b>；作答内容只保存在这台设备上，刷新不会丢。
+    直接在题上作答：选择/判断点选，填空在横线上输入，名词解释/问答/计算在文本框里写。
+    <b>整部分全部做完后</b>才能交卷，交卷后显示正确率、正确答案与解析。
   </div>
+  <div id="score" class="score" style="display:none"></div>
   <div id="list"></div>
   <div class="foot">横断面设计 · 第一部分　横断面组成、车道与路肩</div>
 </div>
 <div class="bar"><div class="in">
   <div class="p" id="pcount"></div>
-  <a href="#" id="clear">清空本部分</a>
+  <button class="btn" id="submit" disabled>交卷</button>
 </div></div>
 <div class="prog"><i id="pfill" style="width:0"></i></div>
 <script>
-const DATA = {"id": 1, "title": "第一部分　横断面组成、车道与路肩", "pages": "45–51", "qs": [{"t": "fill", "type": "填空", "s": "公路路基宽度为____与____之和，当设有中间带、加（减）速车道、爬坡车道、紧急停车带、非机动车道等时，应计入这部分宽度。", "p": 45, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "公路横断面按整体布局可分为____和____两大类，其中双幅又分为____断面和____断面。", "p": 45, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "单幅单车道适用于____级公路，单幅双车道适用于____级公路，双幅多车道适用于____和____级公路。", "p": 45, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "城市道路横断面的组成包括行车道、分隔带、绿化带、____和____等。", "p": 45, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "高速公路和一级公路的路基标准横断面中，中间带由____和两条____组成。", "p": 45, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "城市道路按路幅布置类型可分为四种：单幅路旧称____，双幅路旧称____，三幅路旧称____，四幅路旧称____。", "p": 45, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "机动车道宽度根据设计车辆宽度、设计交通量、交通组成和____确定。", "p": 45, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "行车道宽度由____和____两部分组成，其中富余宽度主要与____有关。", "p": 45, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "高速公路和一级公路当车道数为双车道以上时，应按____增加。", "p": 45, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "路肩分为____和____，其中能承受车辆荷载、供临时停车使用的是____。", "p": 45, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "高速公路右侧硬路肩的一般值为____米，土路肩的一般值为____米。", "p": 45, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "八车道以上高速公路宜设置左侧硬路肩，其宽度不应小于____米。", "p": 45, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "高速公路右侧硬路肩宽度小于____米时，应设置紧急停车带，其宽度应为____米，有效长度不应小于____米，间距不宜大于____米。", "p": 45, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "路拱横坡度的设置目的是____。", "p": 45, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "路拱的基本形式有____、____和____三种，其中高等级公路采用____型路拱。", "p": 45, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "水泥混凝土路面宜采用____型路拱。", "p": 45, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "土路肩横坡一般比路面大____，曲线段外侧的土路肩横坡应做成____的反向横坡。", "p": 45, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "人行道横坡宜采用____坡，坡度为____。", "p": 45, "sec": "填空"}, {"t": "tf", "type": "判断", "s": "公路路基宽度就是车道宽度与路肩宽度之和，不包含中间带宽度。", "p": 46, "sec": "判断", "o": ["对", "错"]}, {"t": "tf", "type": "判断", "s": "分离式断面和整体式断面都属于双幅公路的范畴。", "p": 46, "sec": "判断", "o": ["对", "错"]}, {"t": "tf", "type": "判断", "s": "城市道路中，四幅路的安全性最高，但占地最宽、造价最高。", "p": 46, "sec": "判断", "o": ["对", "错"]}, {"t": "tf", "type": "判断", "s": "公路和城市道路的本质区别在于服务对象不同，公路服务“车”，城市道路服务“人”。", "p": 46, "sec": "判断", "o": ["对", "错"]}, {"t": "tf", "type": "判断", "s": "硬路肩可以作为超车道使用，以提高通行效率。", "p": 46, "sec": "判断", "o": ["对", "错"]}, {"t": "tf", "type": "判断", "s": "左侧硬路肩宽度不包含左侧路缘带宽度。", "p": 46, "sec": "判断", "o": ["对", "错"]}, {"t": "tf", "type": "判断", "s": "路拱横坡坡度越大，对行车越有利。", "p": 46, "sec": "判断", "o": ["对", "错"]}, {"t": "tf", "type": "判断", "s": "折线型路拱适用于沥青混凝土路面。", "p": 46, "sec": "判断", "o": ["对", "错"]}, {"t": "tf", "type": "判断", "s": "中间带由中央分隔带和两条右侧路缘带组成。", "p": 46, "sec": "判断", "o": ["对", "错"]}, {"t": "tf", "type": "判断", "s": "城市道路的两侧分车带用于分隔机动车和非机动车。", "p": 46, "sec": "判断", "o": ["对", "错"]}, {"t": "mc", "type": "选择", "s": "以下哪种路幅布置类型适用于高速公路和一级公路？", "p": 47, "sec": "选择", "o": ["单幅单车道", "单幅双车道", "双幅多车道", "单幅多车道"]}, {"t": "mc", "type": "选择", "s": "城市道路中，旧称“三块板”的是哪种布置类型？", "p": 47, "sec": "选择", "o": ["单幅路", "双幅路", "三幅路", "四幅路"]}, {"t": "mc", "type": "选择", "s": "设计速度为 120 km/h 时，公路车道宽度一般取多少米？", "p": 47, "sec": "选择", "o": ["3.00", "3.25", "3.50", "3.75"]}, {"t": "mc", "type": "选择", "s": "高速公路右侧硬路肩宽度小于多少米时，应设置紧急停车带？", "p": 47, "sec": "选择", "o": ["2.00", "2.50", "3.00", "3.50"]}, {"t": "mc", "type": "选择", "s": "以下哪种路面类型对应的路拱横坡度最小？", "p": 47, "sec": "选择", "o": ["水泥混凝土路面", "碎石路面", "低级路面", "半整齐石块路面"]}, {"t": "mc", "type": "选择", "s": "中间带的组成部分包括（ ）。", "p": 48, "sec": "选择", "o": ["中央分隔带", "左侧路缘带", "右侧路缘带", "A 和 B"]}, {"t": "mc", "type": "选择", "s": "关于硬路肩的作用，以下说法错误的是（ ）。", "p": 48, "sec": "选择", "o": ["供临时停车", "作为超车道使用", "提供侧向余宽", "为养护提供场地"]}, {"t": "mc", "type": "选择", "s": "路拱横坡度的确定与以下哪个因素无关？", "p": 48, "sec": "选择", "o": ["路面结构类型", "车道宽度", "自然条件", "设计车辆颜色"]}, {"t": "term", "type": "名词解释", "s": "路拱", "p": 49, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "中间带", "p": 49, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "硬路肩", "p": 49, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "分离式断面", "p": 49, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "单幅路", "p": 49, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "紧急停车带", "p": 49, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "路缘带", "p": 49, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "土路肩", "p": 49, "sec": "名词解释"}, {"t": "qa", "type": "问答", "s": "简述公路横断面的组成，并说明单幅路和双幅路的主要区别。", "p": 50, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "城市道路横断面有哪四种布置类型？请分别说明各自的特点和适用条件。", "p": 50, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "路肩有哪些作用？硬路肩和土路肩有何区别？", "p": 50, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "简述行车道宽度的确定方法，并说明设计速度与车道宽度之间的关系。", "p": 50, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "什么是中间带？它由哪几部分组成？设置中间带的目的是什么？", "p": 50, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "简述路拱横坡度的设置目的，并说明确定路拱横坡度时需要考虑哪些因素。", "p": 51, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "分离式断面和整体式断面在路肩设置上有何不同？为什么分离式断面需要设置左侧硬路肩？", "p": 51, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "什么是紧急停车带？在什么条件下需要设置？其宽度、长度和间距有何规定？", "p": 51, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "公路和城市道路的本质区别是什么？请从服务对象、功能定位、横断面组成和管理归属四个方面进行说明。", "p": 51, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "请结合实例说明城市道路横断面设计中各组成部分的宽度和横坡是如何确定的。", "p": 51, "sec": "问答"}]};
-const KEY = 'hz_paper_' + DATA.id;
+const DATA = {"id": 1, "title": "第一部分　横断面组成、车道与路肩", "pages": "45–51", "qs": [{"t": "fill", "type": "填空", "s": "公路路基宽度为____与____之和，当设有中间带、加（减）速车道、爬坡车道、紧急停车带、非机动车道等时，应计入这部分宽度。", "p": 45, "sec": "填空", "x": ["车道宽度", "路肩宽度"]}, {"t": "fill", "type": "填空", "s": "公路横断面按整体布局可分为____和____两大类，其中双幅又分为____断面和____断面。", "p": 45, "sec": "填空", "x": ["单幅", "双幅", "分离式", "整体式"]}, {"t": "fill", "type": "填空", "s": "单幅单车道适用于____级公路，单幅双车道适用于____级公路，双幅多车道适用于____和____级公路。", "p": 45, "sec": "填空", "x": ["四", "二、三、四", "高速", "一级"]}, {"t": "fill", "type": "填空", "s": "城市道路横断面的组成包括行车道、分隔带、绿化带、____和____等。", "p": 45, "sec": "填空", "x": ["人行道", "汽车停靠站"]}, {"t": "fill", "type": "填空", "s": "高速公路和一级公路的路基标准横断面中，中间带由____和两条____组成。", "p": 45, "sec": "填空", "x": ["中央分隔带", "左侧路缘带"]}, {"t": "fill", "type": "填空", "s": "城市道路按路幅布置类型可分为四种：单幅路旧称____，双幅路旧称____，三幅路旧称____，四幅路旧称____。", "p": 45, "sec": "填空", "x": ["一块板", "两块板", "三块板", "四块板"]}, {"t": "fill", "type": "填空", "s": "机动车道宽度根据设计车辆宽度、设计交通量、交通组成和____确定。", "p": 45, "sec": "填空", "x": ["汽车行驶速度"]}, {"t": "fill", "type": "填空", "s": "行车道宽度由____和____两部分组成，其中富余宽度主要与____有关。", "p": 45, "sec": "填空", "x": ["设计车辆宽度", "富余宽度", "车速"]}, {"t": "fill", "type": "填空", "s": "高速公路和一级公路当车道数为双车道以上时，应按____增加。", "p": 45, "sec": "填空", "x": ["双数"]}, {"t": "fill", "type": "填空", "s": "路肩分为____和____，其中能承受车辆荷载、供临时停车使用的是____。", "p": 45, "sec": "填空", "x": ["硬路肩", "土路肩", "硬路肩"]}, {"t": "fill", "type": "填空", "s": "高速公路右侧硬路肩的一般值为____米，土路肩的一般值为____米。", "p": 45, "sec": "填空", "x": ["3.00", "0.75"]}, {"t": "fill", "type": "填空", "s": "八车道以上高速公路宜设置左侧硬路肩，其宽度不应小于____米。", "p": 45, "sec": "填空", "x": ["2.50"]}, {"t": "fill", "type": "填空", "s": "高速公路右侧硬路肩宽度小于____米时，应设置紧急停车带，其宽度应为____米，有效长度不应小于____米，间距不宜大于____米。", "p": 45, "sec": "填空", "x": ["2.50", "3.50", "40", "500"]}, {"t": "fill", "type": "填空", "s": "路拱横坡度的设置目的是____。", "p": 45, "sec": "填空", "x": ["利于横向排水"]}, {"t": "fill", "type": "填空", "s": "路拱的基本形式有____、____和____三种，其中高等级公路采用____型路拱。", "p": 45, "sec": "填空", "x": ["抛物线型", "直线型", "折线型", "直线"]}, {"t": "fill", "type": "填空", "s": "水泥混凝土路面宜采用____型路拱。", "p": 45, "sec": "填空", "x": ["折线"]}, {"t": "fill", "type": "填空", "s": "土路肩横坡一般比路面大____，曲线段外侧的土路肩横坡应做成____的反向横坡。", "p": 45, "sec": "填空", "x": ["1.0%～2.0%", "3%或4%"]}, {"t": "fill", "type": "填空", "s": "人行道横坡宜采用____坡，坡度为____。", "p": 45, "sec": "填空", "x": ["单面", "1.0%～2.0%"]}, {"t": "tf", "type": "判断", "s": "公路路基宽度就是车道宽度与路肩宽度之和，不包含中间带宽度。", "p": 46, "sec": "判断", "o": ["对", "错"], "a": 1, "w": "路基宽度＝车道宽＋路肩宽；设中间带、加减速车道、爬坡车道、紧急停车带、非机动车道时一并计入。"}, {"t": "tf", "type": "判断", "s": "分离式断面和整体式断面都属于双幅公路的范畴。", "p": 46, "sec": "判断", "o": ["对", "错"], "a": 0, "w": "双幅分两类：上下行完全分开的分离式，以及中间设分隔带的整体式。"}, {"t": "tf", "type": "判断", "s": "城市道路中，四幅路的安全性最高，但占地最宽、造价最高。", "p": 46, "sec": "判断", "o": ["对", "错"], "a": 0, "w": "四幅路对向与机非全部分开，通行能力与安全性最好，代价是宽度与造价。"}, {"t": "tf", "type": "判断", "s": "公路和城市道路的本质区别在于服务对象不同，公路服务“车”，城市道路服务“人”。", "p": 46, "sec": "判断", "o": ["对", "错"], "a": 0, "w": "城市道路还要满足非机动车和行人，故有人行道、非机动车道、分隔带。"}, {"t": "tf", "type": "判断", "s": "硬路肩可以作为超车道使用，以提高通行效率。", "p": 46, "sec": "判断", "o": ["对", "错"], "a": 1, "w": "硬路肩是应急通道，不是行车道，更不是超车道；借硬路肩超车极易追尾、翻车。"}, {"t": "tf", "type": "判断", "s": "左侧硬路肩宽度不包含左侧路缘带宽度。", "p": 46, "sec": "判断", "o": ["对", "错"], "a": 1, "w": "左侧硬路肩宽度包含左侧路缘带宽度；八车道以上亦然。"}, {"t": "tf", "type": "判断", "s": "路拱横坡坡度越大，对行车越有利。", "p": 46, "sec": "判断", "o": ["对", "错"], "a": 1, "w": "横坡过大车辆有侧向滑移趋势，行车不稳；横坡只以排水够用为度。"}, {"t": "tf", "type": "判断", "s": "折线型路拱适用于沥青混凝土路面。", "p": 46, "sec": "判断", "o": ["对", "错"], "a": 1, "w": "折线型路拱用于水泥混凝土路面，因其分块铺筑、便于放样。"}, {"t": "tf", "type": "判断", "s": "中间带由中央分隔带和两条右侧路缘带组成。", "p": 46, "sec": "判断", "o": ["对", "错"], "a": 1, "w": "中间带＝中央分隔带＋两条左侧路缘带；右侧路缘带在硬路肩内。"}, {"t": "tf", "type": "判断", "s": "城市道路的两侧分车带用于分隔机动车和非机动车。", "p": 46, "sec": "判断", "o": ["对", "错"], "a": 0, "w": "两侧带把非机动车道与机动车道分开，解决机非混行。"}, {"t": "mc", "type": "选择", "s": "以下哪种路幅布置类型适用于高速公路和一级公路？", "p": 47, "sec": "选择", "o": ["单幅单车道", "单幅双车道", "双幅多车道", "单幅多车道"], "a": 2, "w": "双幅多车道适用于高速、一级；单幅单车道为四级，单幅双车道为二、三、四级。"}, {"t": "mc", "type": "选择", "s": "城市道路中，旧称“三块板”的是哪种布置类型？", "p": 47, "sec": "选择", "o": ["单幅路", "双幅路", "三幅路", "四幅路"], "a": 2, "w": "三幅路中间机动车道、两侧分隔带隔开非机动车道，解决机非混行。"}, {"t": "mc", "type": "选择", "s": "设计速度为 120 km/h 时，公路车道宽度一般取多少米？", "p": 47, "sec": "选择", "o": ["3.00", "3.25", "3.50", "3.75"], "a": 3, "w": "120/100/80 km/h 均为 3.75 m；60/40 为 3.50；30 为 3.25；20 为 3.00。"}, {"t": "mc", "type": "选择", "s": "高速公路右侧硬路肩宽度小于多少米时，应设置紧急停车带？", "p": 47, "sec": "选择", "o": ["2.00", "2.50", "3.00", "3.50"], "a": 1, "w": "右侧硬路肩＜2.50 m 时须设紧急停车带：宽 3.50 m、有效长≥40 m、间距≤500 m。"}, {"t": "mc", "type": "选择", "s": "以下哪种路面类型对应的路拱横坡度最小？", "p": 47, "sec": "选择", "o": ["水泥混凝土路面", "碎石路面", "低级路面", "半整齐石块路面"], "a": 0, "w": "路面越平整密实横坡越小：水泥/沥青混凝土 1.0%~2.0%，碎石 2.5%~3.5%，低级路面 3.0%~4.0%。"}, {"t": "mc", "type": "选择", "s": "中间带的组成部分包括（ ）。", "p": 48, "sec": "选择", "o": ["中央分隔带", "左侧路缘带", "右侧路缘带", "A 和 B"], "a": 3, "w": "中间带＝中央分隔带＋两条左侧路缘带。"}, {"t": "mc", "type": "选择", "s": "关于硬路肩的作用，以下说法错误的是（ ）。", "p": 48, "sec": "选择", "o": ["供临时停车", "作为超车道使用", "提供侧向余宽", "为养护提供场地"], "a": 1, "w": "硬路肩是应急通道，不是超车道；其余三项都是路肩的作用。"}, {"t": "mc", "type": "选择", "s": "路拱横坡度的确定与以下哪个因素无关？", "p": 48, "sec": "选择", "o": ["路面结构类型", "车道宽度", "自然条件", "设计车辆颜色"], "a": 3, "w": "横坡取决于路面结构类型、车道宽度和自然条件（降雨），与车辆颜色无关。"}, {"t": "term", "type": "名词解释", "s": "路拱", "p": 49, "sec": "名词解释", "x": "将路面做成由中央向两侧倾斜的拱形，其倾斜大小用百分率表示，称路拱横坡度；设置目的是利于横向排水。"}, {"t": "term", "type": "名词解释", "s": "中间带", "p": 49, "sec": "名词解释", "x": "分隔上下行交通的设施，由中央分隔带和两条左侧路缘带组成；高速公路、一级公路整体式路基必须设置。"}, {"t": "term", "type": "名词解释", "s": "硬路肩", "p": 49, "sec": "名词解释", "x": "进行了铺装、能承受车辆荷载的路肩，属应急通道而非行车道；供故障车临时停靠，并为养护、埋设设施提供场地。"}, {"t": "term", "type": "名词解释", "s": "分离式断面", "p": 49, "sec": "名词解释", "x": "上下行车道完全分开、各自独立成路基的双幅断面，不设中间带，每一幅左侧须设左侧硬路肩；适用于山区、丘陵等地形复杂路段。"}, {"t": "term", "type": "名词解释", "s": "单幅路", "p": 49, "sec": "名词解释", "x": "上下行车道在同一平面上、中间不设分隔带的布置形式（旧称一块板），机非混行、对向混行，宽度利用率高、造价低。"}, {"t": "term", "type": "名词解释", "s": "紧急停车带", "p": 49, "sec": "名词解释", "x": "当高速公路和作为干线的一级公路右侧硬路肩宽度小于 2.50 m 时，在硬路肩外侧加宽设置、专供故障车辆临时停靠的区域；宽 3.50 m、有效长≥40 m、间距≤500 m。"}, {"t": "term", "type": "名词解释", "s": "路缘带", "p": 49, "sec": "名词解释", "x": "设在行车道外侧的窄条带（右侧硬路肩内或中间带两侧），宽度 0.50 m，属行车道的一部分，提供侧向余宽并诱导视线。"}, {"t": "term", "type": "名词解释", "s": "土路肩", "p": 49, "sec": "名词解释", "x": "不加铺装的土质路肩，位于硬路肩外侧，主要作用是保护路基和路面；横坡一般比路面大 1.0%~2.0%。"}, {"t": "qa", "type": "问答", "s": "简述公路横断面的组成，并说明单幅路和双幅路的主要区别。", "p": 50, "sec": "问答", "x": "公路横断面由行车道、路肩、错车道、爬坡车道、路缘带等组成。单幅：上下行在同一平面，中间无分隔带，机非混行、对向混行；双幅：上下行分开、设分隔带（分离式或整体式），对向车流被分开，机非是否分开取决于具体形式。"}, {"t": "qa", "type": "问答", "s": "城市道路横断面有哪四种布置类型？请分别说明各自的特点和适用条件。", "p": 50, "sec": "问答", "x": "（1）单幅路（一块板）：机非混行、对向混行，宽度利用率高、造价低，适用于交通量不大的次干路或支路。（2）双幅路（两块板）：对向分开、机非仍混行，适用于对向交通量大而机非较少的道路。（3）三幅路（三块板）：机非分开、对向未分，适用于机非都较多的主干路。（4）四幅路（四块板）：对向与机非全部分开，安全性与通行能力最强，适用于快速路或交通量很大的主干路。"}, {"t": "qa", "type": "问答", "s": "路肩有哪些作用？硬路肩和土路肩有何区别？", "p": 50, "sec": "问答", "x": "作用：①保护和支撑路面结构；②供临时停车，防止事故与混乱；③提供侧向余宽与侧向通视条件；④为养护、埋设设施提供场地，也可供行人和非机动车使用；⑤精心养护能增进美观。区别：硬路肩有铺装、能承受车辆荷载，是应急通道、非行车道；土路肩不加铺装、为土质，主要作用是保护路基和路面。"}, {"t": "qa", "type": "问答", "s": "简述行车道宽度的确定方法，并说明设计速度与车道宽度之间的关系。", "p": 50, "sec": "问答", "x": "行车道宽度＝设计车辆宽度＋富余宽度。设计车辆宽取载重汽车车厢宽度 2.5 m；富余宽度指车辆与路面边缘、车身与车身之间的横向安全距离，主要与车速有关。设计速度越高，车辆横向摆动越大，所需车道越宽。"}, {"t": "qa", "type": "问答", "s": "什么是中间带？它由哪几部分组成？设置中间带的目的是什么？", "p": 50, "sec": "问答", "x": "中间带是分隔上下行交通的设施，由中央分隔带和两条左侧路缘带组成。目的是分隔对向车流、杜绝随意掉头，防止夜间车灯眩光，并为护栏、绿化、管线、行人过街安全岛提供场地，提高行车安全性与通行能力。"}, {"t": "qa", "type": "问答", "s": "简述路拱横坡度的设置目的，并说明确定路拱横坡度时需要考虑哪些因素。", "p": 51, "sec": "问答", "x": "目的是横向排水，防止雨水积在路面上。需考虑三个因素：路面结构类型（越平整密实，横坡越小）、车道宽度（车道越宽，横坡越大）、自然条件（降雨量大的地区横坡适当加大）。"}, {"t": "qa", "type": "问答", "s": "分离式断面和整体式断面在路肩设置上有何不同？为什么分离式断面需要设置左侧硬路肩？", "p": 51, "sec": "问答", "x": "整体式断面有中央分隔带，只在右侧设硬路肩；分离式断面上下行完全分开、每幅无中央分隔带，因此每幅左侧也必须设左侧硬路肩（含左侧路缘带）：120 km/h 取 1.25 m、100 km/h 取 1.00 m、80 和 60 km/h 取 0.75 m。目的是保证左侧车道故障车能安全停靠，并为养护提供作业空间。"}, {"t": "qa", "type": "问答", "s": "什么是紧急停车带？在什么条件下需要设置？其宽度、长度和间距有何规定？", "p": 51, "sec": "问答", "x": "是当高速公路和作为干线的一级公路右侧硬路肩宽度小于 2.50 m 时，在硬路肩外侧加宽设置、专供故障车辆临时停靠的区域。宽度应为 3.50 m，有效长度不应小于 40 m，间距不宜大于 500 m。"}, {"t": "qa", "type": "问答", "s": "公路和城市道路的本质区别是什么？请从服务对象、功能定位、横断面组成和管理归属四个方面进行说明。", "p": 51, "sec": "问答", "x": "（1）服务对象：公路服务“车”，尤其长途过境交通；城市道路服务“人”，要同时满足机动车、非机动车和行人。（2）功能定位：公路核心是“通过”，追求快速顺畅；城市道路核心是“通达”，连接地块，兼顾商业、居住、公交。（3）横断面组成：公路主要是行车道加路肩，组成简单；城市道路必须考虑人行道、非机动车道、分隔带、绿化带、公交站台，组成复杂。（4）管理归属：公路归交通部门，城市道路归住建或市政部门，两套体系、两套标准。"}, {"t": "qa", "type": "问答", "s": "请结合实例说明城市道路横断面设计中各组成部分的宽度和横坡是如何确定的。", "p": 51, "sec": "问答", "x": "以城市沥青混凝土路面为例，横断面从左到右：人行道 3.5 m、横坡 2%；非机动车道 2.5 m；机动车道单向 3 条、每条 3.5 m、横坡 1.5%；中间绿化带宽 2 m、横坡 0%；右侧对称布置，路基总宽 36 m。宽度按道路等级、设计速度和交通量查规范确定；横坡原则是机动车道最小（1.5%）以保证行车舒适，非机动车道和人行道稍大（2.0%）以利排水，绿化带取 0%。"}]};
+const KEY = 'hz_paper2_' + DATA.id;
 let st = {};
 try { st = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { st = {}; }
 const save = () => localStorage.setItem(KEY, JSON.stringify(st));
 const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
+function norm(s) {
+  return String(s == null ? '' : s).trim().toLowerCase()
+    .replace(/[\s\u00a0]/g,'').replace(/[，、]/g,',').replace(/[～~—–－]/g,'~')
+    .replace(/（/g,'(').replace(/）/g,')').replace(/[；;]/g,';').replace(/：/g,':')
+    .replace(/[。.]$/,'').replace(/％/g,'%');
+}
+function eq(a, b) {
+  const x = norm(a), y = norm(b);
+  if (!x) return false;
+  if (x === y) return true;
+  const nx = parseFloat(x), ny = parseFloat(y);
+  if (!isNaN(nx) && !isNaN(ny) && Math.abs(nx - ny) < 1e-9) return true;
+  if (y.indexOf('或') >= 0) return y.split('或').some(t => t && norm(t) === x);
+  return false;
+}
+
+let graded = !!st.__graded;
+if (!st.__started) { st.__started = Date.now(); save(); }
+const startedAt = st.__started;
+
 document.getElementById('ptitle').textContent = DATA.title;
 document.getElementById('pmeta').textContent =
-  '共 ' + DATA.qs.length + ' 题 · 课件第 ' + DATA.pages + ' 页 · 直接在本页作答';
+  '共 ' + DATA.qs.length + ' 题 · 课件第 ' + DATA.pages + ' 页 · 全部做完才能看答案';
 
-let html = '', lastSec = '';
-DATA.qs.forEach((q, i) => {
-  if (q.sec !== lastSec) {
-    lastSec = q.sec;
-    html += '<div class="sec"><b>' + esc(q.sec) + '</b><i></i></div>';
-  }
-  html += '<section class="q"><div class="qtop"><span class="qno">' + (i + 1) + '</span>'
-    + '<span>' + q.type + ' · 课件 P' + q.p + '</span></div>';
-
+function isAuto(q) { return q.t === 'mc' || q.t === 'tf' || q.t === 'fill'; }
+function answered(i) {
+  const q = DATA.qs[i];
+  if (q.t === 'mc' || q.t === 'tf') return st['c' + i] !== undefined;
   if (q.t === 'fill') {
-    const segs = q.s.split(/_{2,}/);
-    const n = segs.length - 1;
-    const vals = (st['f' + i] && st['f' + i].length === n) ? st['f' + i] : new Array(n).fill('');
-    let line = '<div class="qs">';
-    segs.forEach((seg, k) => {
-      line += esc(seg);
-      if (k < n) {
-        const w = 7;
-        line += '<input class="blank-in" data-q="' + i + '" data-b="' + k
-          + '" style="width:' + w + 'em" value="' + esc(vals[k] || '') + '">';
-      }
-    });
-    html += line + '</div>';
-  } else {
-    html += '<div class="qs">' + esc(q.s) + '</div>';
+    const v = st['f' + i] || [];
+    return v.length === q.x.length && v.every(x => String(x).trim() !== '');
+  }
+  return String(st['t' + i] || '').trim() !== '';
+}
+function correct(i) {
+  const q = DATA.qs[i];
+  if (q.t === 'mc' || q.t === 'tf') return st['c' + i] === q.a;
+  if (q.t === 'fill') {
+    const v = st['f' + i] || [];
+    return q.x.every((a, k) => eq(v[k], a));
+  }
+  return null;
+}
+
+function stemHtml(q, i) {
+  if (q.t !== 'fill') return '<div class="qs">' + esc(q.s) + '</div>';
+  const segs = q.s.split(/_{2,}/);
+  const n = segs.length - 1;
+  const vals = (st['f' + i] && st['f' + i].length === n) ? st['f' + i] : new Array(n).fill('');
+  let line = '<div class="qs">';
+  segs.forEach((seg, k) => {
+    line += esc(seg);
+    if (k < n) {
+      let cls = 'blank-in';
+      if (graded) cls += eq(vals[k], q.x[k]) ? ' ok' : ' bad';
+      line += '<input class="' + cls + '" data-q="' + i + '" data-b="' + k + '" value="'
+        + esc(vals[k] || '') + '"' + (graded ? ' disabled' : '') + '>';
+    }
+  });
+  return line + '</div>';
+}
+
+function render() {
+  let html = '', lastSec = '';
+  DATA.qs.forEach((q, i) => {
+    if (q.sec !== lastSec) { lastSec = q.sec; html += '<div class="sec"><b>' + esc(q.sec) + '</b><i></i></div>'; }
+    html += '<section class="q"><div class="qtop"><span class="qno">' + (i + 1) + '</span>'
+      + '<span>' + q.type + ' · 课件 P' + q.p + '</span></div>' + stemHtml(q, i);
+
     if (q.t === 'mc' || q.t === 'tf') {
       const picked = st['c' + i];
       html += q.o.map((t, k) => {
         const key = q.t === 'tf' ? (k === 0 ? '√' : '×') : 'ABCD'[k];
-        return '<div class="opt' + (picked === k ? ' on' : '') + '" data-q="' + i + '" data-k="' + k + '">'
+        let cls = 'opt';
+        if (graded) {
+          if (k === q.a) cls += ' right';
+          else if (k === picked) cls += ' wrong';
+          else cls += ' dim';
+        } else if (picked === k) cls += ' on';
+        return '<div class="' + cls + '" data-q="' + i + '" data-k="' + k + '">'
           + '<span class="k">' + key + '</span><span>' + esc(t) + '</span></div>';
       }).join('');
+      if (graded) {
+        const ok = picked === q.a;
+        html += '<div class="res ' + (ok ? 'good' : 'bad') + '"><h4>' + (ok ? '✓ 答对了' : '✗ 答错了')
+          + '</h4><p><b>正确答案：</b>' + (q.t === 'tf' ? (q.a === 0 ? '对' : '错') : 'ABCD'[q.a])
+          + '</p><p><b>解析：</b>' + esc(q.w || '') + '</p></div>';
+      }
+    } else if (q.t === 'fill') {
+      if (graded) {
+        const v = st['f' + i] || [];
+        const nRight = q.x.filter((a, k) => eq(v[k], a)).length;
+        const all = nRight === q.x.length;
+        html += '<div class="res ' + (all ? 'good' : 'bad') + '"><h4>'
+          + (all ? '✓ 全对（' + nRight + '/' + q.x.length + '）' : '✗ 只对了 ' + nRight + '/' + q.x.length + ' 空')
+          + '</h4><p><b>参考答案：</b></p><ol>'
+          + q.x.map(a => '<li>' + esc(a) + '</li>').join('') + '</ol></div>';
+      }
     } else {
-      const v = (st['t' + i] || '');
-      html += '<textarea data-q="' + i + '" placeholder="在这里作答">' + esc(v) + '</textarea>';
+      const v = st['t' + i] || '';
+      html += '<textarea data-q="' + i + '"' + (graded ? ' disabled' : '')
+        + ' placeholder="在这里作答">' + esc(v) + '</textarea>';
+      if (graded) {
+        html += '<div class="res info"><h4>参考答案<span style="font-weight:400;color:#9499A0;'
+          + 'font-size:12px"> · 不参与计分</span></h4>'
+          + (Array.isArray(q.x)
+              ? '<ol>' + q.x.map(a => '<li>' + esc(a) + '</li>').join('') + '</ol>'
+              : '<p>' + esc(q.x).replace(/\n/g, '<br>') + '</p>') + '</div>';
+      }
     }
-  }
-  html += '</section>';
-});
-document.getElementById('list').innerHTML = html;
-
-function progress() {
-  let done = 0;
-  DATA.qs.forEach((q, i) => {
-    if (q.t === 'mc' || q.t === 'tf') { if (st['c' + i] !== undefined) done++; }
-    else if (q.t === 'fill') {
-      const v = st['f' + i] || [];
-      if (v.length && v.every(x => String(x).trim() !== '')) done++;
-    } else if (String(st['t' + i] || '').trim() !== '') done++;
+    html += '</section>';
   });
-  document.getElementById('pcount').textContent = '已作答 ' + done + ' / ' + DATA.qs.length;
-  document.getElementById('pfill').style.width = Math.round(done / DATA.qs.length * 100) + '%';
+  document.getElementById('list').innerHTML = html;
+  bind();
+  updateBar();
+  renderScore();
 }
 
-document.querySelectorAll('.opt').forEach(el => {
-  el.onclick = () => {
-    const i = Number(el.dataset.q);
-    st['c' + i] = Number(el.dataset.k);
-    save();
-    document.querySelectorAll('.opt[data-q="' + i + '"]').forEach(x => x.classList.remove('on'));
-    el.classList.add('on');
-    progress();
-  };
-});
+function bind() {
+  if (graded) return;
+  document.querySelectorAll('.opt').forEach(el => {
+    el.onclick = () => {
+      const i = Number(el.dataset.q);
+      st['c' + i] = Number(el.dataset.k); save();
+      document.querySelectorAll('.opt[data-q="' + i + '"]').forEach(x => x.classList.remove('on'));
+      el.classList.add('on');
+      updateBar();
+    };
+  });
+  document.querySelectorAll('input.blank-in').forEach(inp => {
+    inp.oninput = () => {
+      const i = Number(inp.dataset.q);
+      const all = document.querySelectorAll('input.blank-in[data-q="' + i + '"]');
+      st['f' + i] = [].map.call(all, x => x.value); save(); updateBar();
+    };
+  });
+  document.querySelectorAll('textarea[data-q]').forEach(ta => {
+    ta.oninput = () => { st['t' + Number(ta.dataset.q)] = ta.value; save(); updateBar(); };
+  });
+}
 
-document.querySelectorAll('input.blank-in').forEach(inp => {
-  inp.oninput = () => {
-    const i = Number(inp.dataset.q);
-    const all = document.querySelectorAll('input.blank-in[data-q="' + i + '"]');
-    st['f' + i] = [].map.call(all, x => x.value);
-    save(); progress();
-  };
-});
+function stats() {
+  let autoTotal = 0, autoRight = 0, done = 0;
+  DATA.qs.forEach((q, i) => {
+    if (answered(i)) done++;
+    if (isAuto(q)) { autoTotal++; if (answered(i) && correct(i)) autoRight++; }
+  });
+  return { autoTotal: autoTotal, autoRight: autoRight, done: done, total: DATA.qs.length };
+}
 
-document.querySelectorAll('textarea[data-q]').forEach(ta => {
-  ta.oninput = () => {
-    st['t' + Number(ta.dataset.q)] = ta.value;
-    save(); progress();
-  };
-});
+function updateBar() {
+  const s = stats();
+  document.getElementById('pcount').textContent =
+    graded ? '已交卷 · 机读题 ' + s.autoRight + '/' + s.autoTotal
+           : '已作答 ' + s.done + ' / ' + s.total;
+  document.getElementById('pfill').style.width = Math.round(s.done / s.total * 100) + '%';
+  const btn = document.getElementById('submit');
+  if (graded) { btn.textContent = '重做本部分'; btn.disabled = false; btn.className = 'btn ghost'; }
+  else {
+    btn.textContent = s.done < s.total ? '还有 ' + (s.total - s.done) + ' 题未答' : '交卷并看答案';
+    btn.disabled = s.done < s.total;
+    btn.className = 'btn';
+  }
+}
 
-document.getElementById('clear').onclick = () => {
-  if (!confirm('清空本部分的作答？')) return;
-  st = {}; save();
-  document.querySelectorAll('.opt').forEach(x => x.classList.remove('on'));
-  document.querySelectorAll('input.blank-in').forEach(x => { x.value = ''; });
-  document.querySelectorAll('textarea[data-q]').forEach(x => { x.value = ''; });
-  progress();
+function renderScore() {
+  const box = document.getElementById('score');
+  if (!graded) { box.style.display = 'none'; box.innerHTML = ''; return; }
+  const s = stats();
+  const rate = s.autoTotal ? Math.round(s.autoRight / s.autoTotal * 100) : 0;
+  const sec = Math.max(0, Math.round((Date.now() - startedAt) / 1000));
+  box.style.display = 'block';
+  box.innerHTML = '<div class="row"><span class="big">' + rate + '%</span>'
+    + '<span class="meta">机读题正确率（' + s.autoRight + '/' + s.autoTotal
+    + '）· 名词解释/问答/计算不参与计分</span></div>'
+    + '<div class="meta">全卷 ' + s.total + ' 题已全部作答 · 用时 '
+    + Math.floor(sec / 60) + ' 分 ' + (sec % 60) + ' 秒</div>';
+}
+
+document.getElementById('submit').onclick = () => {
+  if (graded) {
+    if (!confirm('重做会把本部分的作答清空，确定？')) return;
+    st = { __started: Date.now() }; graded = false; save(); render(); window.scrollTo({ top: 0 }); return;
+  }
+  const s = stats();
+  if (s.done < s.total) { alert('还有 ' + (s.total - s.done) + ' 题没答，做完才能看答案'); return; }
+  st.__graded = true; graded = true; save();
+  render(); window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
-progress();
+render();
 </script>
 </body></html>
