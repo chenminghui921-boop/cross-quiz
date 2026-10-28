@@ -1,46 +1,70 @@
 <!doctype html>
 <html lang="zh-CN"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#FB7299">
 <title>第三部分　土石方计算与调配</title>
 <style>
-:root{--ink:#18191C;--ink2:#61666D;--ink3:#9499A0;--line:#E9EBEE;--bg:#F5F6F8;--pink:#FB7299}
+:root{--pink:#FB7299;--pink-d:#E45C82;--ink:#18191C;--ink2:#61666D;--ink3:#9499A0;
+  --line:#E9EBEE;--bg:#F5F6F8;--ok:#2BA471;--bad:#D54941}
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 body{margin:0;background:var(--bg);color:var(--ink);
   font:15px/1.68 -apple-system,"PingFang SC","Microsoft YaHei",sans-serif}
-header{background:#8B1D1D;color:#fff;padding:20px 0 18px}
+header{background:var(--pink);color:#fff;padding:20px 0 18px}
 .hin,.wrap{max-width:780px;margin:0 auto;padding:0 16px}
 h1{margin:0 0 6px;font-size:20px}
-.hsub{font-size:13px;color:rgba(255,255,255,.9)}
-.wrap{padding-bottom:100px}
-.note{background:#FFF7E6;border:1px solid #FFE0A3;color:#7a5200;border-radius:10px;
+.hsub{font-size:13px;color:rgba(255,255,255,.92)}
+.wrap{padding-bottom:110px}
+.note{background:#FFF4F7;border:1px solid #FFD7E3;color:#8a3550;border-radius:10px;
   padding:12px 14px;font-size:13.5px;margin:16px 0;line-height:1.75}
 .sec{display:flex;align-items:center;gap:10px;margin:26px 0 6px;color:var(--ink2);font-size:13px}
-.sec b{color:#8B1D1D;font-size:14px}
+.sec b{color:var(--pink);font-size:14px}
 .sec i{flex:1;height:1px;background:var(--line);font-style:normal}
 .q{background:#fff;border-radius:14px;padding:16px;margin:12px 0;box-shadow:0 1px 3px rgba(0,0,0,.05)}
 .qtop{display:flex;justify-content:space-between;color:var(--ink3);font-size:12.5px;margin-bottom:8px}
-.qno{font-weight:700;color:#8B1D1D}
+.qno{font-weight:700;color:var(--pink)}
 .qs{font-weight:600;line-height:1.68;margin-bottom:12px}
 .blank-in{width:3.2em;border:0;border-bottom:1.5px solid #A9AEB5;background:transparent;
   font:inherit;font-weight:600;text-align:center;padding:0 2px;margin:0 3px;border-radius:0}
 .blank-in:focus{outline:none;border-color:var(--pink);background:#FFF4F7}
+.blank-in.ok{border-color:var(--ok);background:#F0FAF5}
+.blank-in.bad{border-color:var(--bad);background:#FEF3F2}
 .opt{display:flex;gap:10px;align-items:flex-start;border:1.5px solid var(--line);border-radius:10px;
   padding:11px 13px;margin:8px 0;cursor:pointer;background:#fff;font-size:14.5px;line-height:1.5}
 .opt:hover{border-color:#D7DBE0}
-.opt.on{border-color:#8B1D1D;background:#FBF3F2}
+.opt.on{border-color:var(--pink);background:#FFF4F7}
+.opt.right{border-color:var(--ok);background:#F0FAF5}
+.opt.wrong{border-color:var(--bad);background:#FEF3F2}
+.opt.dim{opacity:.55}
 .opt .k{font-weight:700;color:var(--ink2);min-width:18px}
-.opt.on .k{color:#8B1D1D}
+.opt.on .k{color:var(--pink)}
+.opt.right .k{color:var(--ok)}
+.opt.wrong .k{color:var(--bad)}
 textarea{width:100%;min-height:92px;border:1.5px solid var(--line);border-radius:10px;padding:11px;
   font:15px/1.65 inherit;resize:vertical;background:#FCFCFD;outline:none}
 textarea:focus{border-color:var(--pink);background:#fff}
+.res{margin-top:12px;padding:13px;border-radius:10px;font-size:14.3px}
+.res.good{background:#F0FAF5;border:1px solid #C9ECD9}
+.res.bad{background:#FEF3F2;border:1px solid #F7D5D2}
+.res.info{background:#FAFBFC;border:1px solid #E8EAED}
+.res h4{margin:0 0 8px;font-size:15px}
+.res ol{margin:6px 0 6px 20px;padding:0}
+.res li{margin:4px 0}
+.res p{margin:6px 0}
+.score{background:#fff;border-radius:14px;padding:18px;margin:16px 0;box-shadow:0 1px 3px rgba(0,0,0,.05)}
+.score .big{font-size:34px;font-weight:700;color:var(--pink);line-height:1.1}
+.score .row{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.score .meta{color:var(--ink2);font-size:13px;margin-top:6px}
 .bar{position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);
   padding:10px 16px;z-index:20}
 .bar .in{max-width:780px;margin:0 auto;display:flex;align-items:center;gap:12px}
 .bar .p{flex:1;font-size:13px;color:var(--ink2)}
-.bar a{font-size:13px;color:var(--pink);text-decoration:none}
+.btn{border:0;border-radius:10px;background:var(--pink);color:#fff;font-size:15px;
+  font-weight:600;padding:11px 20px;cursor:pointer}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:#fff;color:var(--pink);border:1.5px solid var(--pink)}
 .prog{height:5px;background:#EDEFF2;border-radius:3px;overflow:hidden;margin-top:6px;
   max-width:780px;margin-left:auto;margin-right:auto}
-.prog i{display:block;height:100%;background:#8B1D1D;transition:width .2s}
+.prog i{display:block;height:100%;background:var(--pink);transition:width .2s}
 .foot{color:#9AA0AA;font-size:12px;text-align:center;margin-top:26px;line-height:1.9}
 </style></head>
 <body>
@@ -50,119 +74,216 @@ textarea:focus{border-color:var(--pink);background:#fff}
 </div></header>
 <div class="wrap">
   <div class="note">
-    直接在本页作答：选择题点选，填空题在横线上输入，名词解释 / 问答 / 计算在题下文本框里写。
-    <b>本页不显示答案</b>；作答内容只保存在这台设备上，刷新不会丢。
+    直接在题上作答：选择/判断点选，填空在横线上输入，名词解释/问答/计算在文本框里写。
+    <b>整部分全部做完后</b>才能交卷，交卷后显示正确率、正确答案与解析。
   </div>
+  <div id="score" class="score" style="display:none"></div>
   <div id="list"></div>
   <div class="foot">横断面设计 · 第三部分　土石方计算与调配</div>
 </div>
 <div class="bar"><div class="in">
   <div class="p" id="pcount"></div>
-  <a href="#" id="clear">清空本部分</a>
+  <button class="btn" id="submit" disabled>交卷</button>
 </div></div>
 <div class="prog"><i id="pfill" style="width:0"></i></div>
 <script>
-const DATA = {"id": 3, "title": "第三部分　土石方计算与调配", "pages": "104–111", "qs": [{"t": "fill", "type": "填空", "s": "横断面面积计算常用的两种方法是____和____。", "p": 104, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "积距法的总面积公式为 A=____，其中 b 表示____，hi 表示____。", "p": 104, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "坐标法的面积公式为 A=____。", "p": 104, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "当相邻两断面均为填方或均为挖方且面积大小相近时，可假定两断面之间为____，其体积公式为 V=____。", "p": 104, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "当相邻两断面面积相差较大时，两断面之间更接近____，其体积公式为 V=____。", "p": 104, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "土石方调配的目的是确定____的来源、____的去向，以及计价土石方的数量和运量。", "p": 104, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "土石方调配的第一条原则是：半填半挖断面中，先____平衡，再____调配。", "p": 104, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "纵向调运的距离应小于____。", "p": 104, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "经济运距的计算公式为 Lj=____，其中 B 表示____，T 表示____，Lm 表示____。", "p": 104, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "一般人工运输的免费运距为____米，汽车运输的免费运距为____公里。", "p": 104, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "土石方调配中，填方＝本桩利用＋____＝横向调运＋纵向调运＋____。", "p": 104, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "挖方＝本桩利用＋____＝横向调运＋纵向调运＋____。", "p": 104, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "挖方＋借方＝____＋弃方。", "p": 104, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "计价土石方＝____＋____。", "p": 104, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "所有挖方计价，填方中的路外借土要计价，____不重复计价。", "p": 104, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "定额中“天然密实土”是指____，“夯实土”是指____，“松填土”是指____。", "p": 104, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "土方松实系数换算表中，自然方为 1，松方为____，实方为____。", "p": 104, "sec": "填空"}, {"t": "fill", "type": "填空", "s": "生产上多采用____调配法进行土石方调配。", "p": 104, "sec": "填空"}, {"t": "mc", "type": "选择", "s": "横断面面积计算中，积距法的总面积公式为（ ）。", "p": 105, "sec": "选择", "o": ["A=bΣhi", "A=1/2Σ(xi·yi+1－xi-1·yi)", "A=1/2(F1+F2)L", "A=1/3(F1+F2)L"]}, {"t": "mc", "type": "选择", "s": "当相邻两断面面积相差较大时，土石方体积计算应采用（ ）。", "p": 105, "sec": "选择", "o": ["平均断面法", "棱台公式", "积距法", "坐标法"]}, {"t": "mc", "type": "选择", "s": "经济运距的计算公式 Lj=B/T+Lm 中，B 表示（ ）。", "p": 105, "sec": "选择", "o": ["远运运费单价", "借土单价", "免费运距", "调配方数"]}, {"t": "mc", "type": "选择", "s": "一般汽车运输的免费运距为（ ）。", "p": 105, "sec": "选择", "o": ["20 米", "100 米", "1 公里", "5 公里"]}, {"t": "mc", "type": "选择", "s": "以下哪个等式是正确的？", "p": 105, "sec": "选择", "o": ["填方＝本桩利用＋挖余", "挖方＝本桩利用＋填缺", "挖方＋借方＝填方＋弃方", "计价土石方＝填方＋借方"]}, {"t": "mc", "type": "选择", "s": "关于计价土石方，以下说法正确的是（ ）。", "p": 106, "sec": "选择", "o": ["计价土石方＝挖方数量＋填方数量", "移挖作填的土方需要重复计价", "计价土石方＝挖方数量＋借方数量", "所有填方都需要计价"]}, {"t": "mc", "type": "选择", "s": "土方松实系数换算表中，自然方为 1，松方为（ ）。", "p": 106, "sec": "选择", "o": ["0.85", "1.33", "1.53", "1.07"]}, {"t": "mc", "type": "选择", "s": "土石方调配时，首先应考虑的是（ ）。", "p": 106, "sec": "选择", "o": ["纵向调运", "横向平衡", "借方", "弃方"]}, {"t": "mc", "type": "选择", "s": "以下哪种情况应优先考虑上下线的土方竖向调运？", "p": 106, "sec": "选择", "o": ["直线路段", "回头曲线路段", "桥梁路段", "隧道路段"]}, {"t": "mc", "type": "选择", "s": "土石方计算表调配法中，复核检查的等式不包括（ ）。", "p": 106, "sec": "选择", "o": ["填方＝本桩利用＋填缺", "挖方＝本桩利用＋挖余", "挖方＋借方＝填方＋弃方", "填方＝借方＋弃方"]}, {"t": "tf", "type": "判断", "s": "积距法适合用计算机程序计算，坐标法适合手工计算。", "p": 107, "sec": "判断", "o": ["对", "错"]}, {"t": "tf", "type": "判断", "s": "平均断面法适用于相邻两断面面积相差较大的情况。", "p": 107, "sec": "判断", "o": ["对", "错"]}, {"t": "tf", "type": "判断", "s": "经济运距是指按费用计算的纵向调运的最大限度。", "p": 107, "sec": "判断", "o": ["对", "错"]}, {"t": "tf", "type": "判断", "s": "免费运距是指在这个距离之内运输不额外计费。", "p": 107, "sec": "判断", "o": ["对", "错"]}, {"t": "tf", "type": "判断", "s": "土石方调配时，应先纵向调配，再横向平衡。", "p": 107, "sec": "判断", "o": ["对", "错"]}, {"t": "tf", "type": "判断", "s": "计价土石方等于挖方数量加借方数量。", "p": 107, "sec": "判断", "o": ["对", "错"]}, {"t": "tf", "type": "判断", "s": "移挖作填的土方需要重复计价。", "p": 107, "sec": "判断", "o": ["对", "错"]}, {"t": "tf", "type": "判断", "s": "天然密实土的体积大于夯实土的体积。", "p": 107, "sec": "判断", "o": ["对", "错"]}, {"t": "tf", "type": "判断", "s": "1 立方米天然密实土挖松后变成 1.33 立方米松方。", "p": 107, "sec": "判断", "o": ["对", "错"]}, {"t": "tf", "type": "判断", "s": "石方和土方可以混合调配，不需要分开。", "p": 107, "sec": "判断", "o": ["对", "错"]}, {"t": "term", "type": "名词解释", "s": "经济运距", "p": 108, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "免费运距", "p": 108, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "本桩利用", "p": 108, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "填缺", "p": 108, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "挖余", "p": 108, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "计价土石方", "p": 108, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "天然密实土", "p": 108, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "夯实土", "p": 108, "sec": "名词解释"}, {"t": "term", "type": "名词解释", "s": "松填土", "p": 108, "sec": "名词解释"}, {"t": "calc", "type": "计算", "s": "题目一：某公路路基施工中，有一段填方路堤需要填筑。已知填方压实后的体积（实方）为 8000 m³，采用土方填筑，从取土场挖取天然密实土（自然方）来填筑。（土方松实系数：自然方 1，松方 1.33，实方 0.85）\n（1）需要从取土场挖取多少自然方的土？\n（2）挖出来的土堆放在路边，松方体积是多少？\n（3）如果利用路段本身挖方产生的天然密实土来填筑，请分析整个过程中体积是如何变化的。", "p": 109, "sec": "计算"}, {"t": "calc", "type": "计算", "s": "题目二：某路段相邻两个断面的挖方面积分别为 F1=50 m² 和 F2=60 m²，两断面之间的距离 L=20 m。\n（1）用平均断面法计算两断面之间的土方体积。\n（2）如果 F1=30 m²、F2=90 m²，面积相差较大，用棱台公式计算体积。（m=F1/F2，F2>F1）", "p": 110, "sec": "计算"}, {"t": "qa", "type": "问答", "s": "简述横断面面积计算的两种方法，并说明各自的优缺点和适用场景。", "p": 111, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "简述土石方数量计算中平均断面法和棱台公式的适用条件。", "p": 111, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "土石方调配的目的是什么？调配应遵循哪些原则？", "p": 111, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "什么是经济运距？如何计算？它在土石方调配中有什么意义？", "p": 111, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "土石方计算表调配法分哪几个步骤？请简要说明每个步骤的内容。", "p": 111, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "复核检查土石方调配时，有哪三个等式必须成立？请写出来并解释其含义。", "p": 111, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "什么是计价土石方？为什么移挖作填不重复计价？", "p": 111, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "简述土方松实系数换算表中自然方、松方、实方三者之间的关系，并说明为什么算土方量时必须考虑松实系数换算。", "p": 111, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "土石方调配时，为什么要考虑桥涵位置和路线纵坡的影响？为什么要尽量少占农田？", "p": 111, "sec": "问答"}, {"t": "qa", "type": "问答", "s": "请结合实例说明土石方计算表调配法的应用过程。", "p": 111, "sec": "问答"}]};
-const KEY = 'hz_paper_' + DATA.id;
+const DATA = {"id": 3, "title": "第三部分　土石方计算与调配", "pages": "104–111", "qs": [{"t": "fill", "type": "填空", "s": "横断面面积计算常用的两种方法是____和____。", "p": 104, "sec": "填空", "x": ["积距法", "坐标法"]}, {"t": "fill", "type": "填空", "s": "积距法的总面积公式为 A=____，其中 b 表示____，hi 表示____。", "p": 104, "sec": "填空", "x": ["b·Σhi", "等分宽度", "各等分点的高度"]}, {"t": "fill", "type": "填空", "s": "坐标法的面积公式为 A=____。", "p": 104, "sec": "填空", "x": ["1/2·Σ(xi·yi+1 － xi-1·yi)"]}, {"t": "fill", "type": "填空", "s": "当相邻两断面均为填方或均为挖方且面积大小相近时，可假定两断面之间为____，其体积公式为 V=____。", "p": 104, "sec": "填空", "x": ["棱柱体", "1/2·(F1+F2)·L"]}, {"t": "fill", "type": "填空", "s": "当相邻两断面面积相差较大时，两断面之间更接近____，其体积公式为 V=____。", "p": 104, "sec": "填空", "x": ["棱台", "1/3·(F1+F2)·L·(1+√m/(1+m))，m=F1/F2"]}, {"t": "fill", "type": "填空", "s": "土石方调配的目的是确定____的来源、____的去向，以及计价土石方的数量和运量。", "p": 104, "sec": "填空", "x": ["填方用土", "挖方弃土"]}, {"t": "fill", "type": "填空", "s": "土石方调配的第一条原则是：半填半挖断面中，先____平衡，再____调配。", "p": 104, "sec": "填空", "x": ["横向", "纵向"]}, {"t": "fill", "type": "填空", "s": "纵向调运的距离应小于____。", "p": 104, "sec": "填空", "x": ["经济运距"]}, {"t": "fill", "type": "填空", "s": "经济运距的计算公式为 Lj=____，其中 B 表示____，T 表示____，Lm 表示____。", "p": 104, "sec": "填空", "x": ["B/T + Lm", "借土单价", "远运运费单价", "免费运距"]}, {"t": "fill", "type": "填空", "s": "一般人工运输的免费运距为____米，汽车运输的免费运距为____公里。", "p": 104, "sec": "填空", "x": ["20", "1"]}, {"t": "fill", "type": "填空", "s": "土石方调配中，填方＝本桩利用＋____＝横向调运＋纵向调运＋____。", "p": 104, "sec": "填空", "x": ["填缺", "借方"]}, {"t": "fill", "type": "填空", "s": "挖方＝本桩利用＋____＝横向调运＋纵向调运＋____。", "p": 104, "sec": "填空", "x": ["挖余", "弃方"]}, {"t": "fill", "type": "填空", "s": "挖方＋借方＝____＋弃方。", "p": 104, "sec": "填空", "x": ["填方"]}, {"t": "fill", "type": "填空", "s": "计价土石方＝____＋____。", "p": 104, "sec": "填空", "x": ["挖方数量", "借方数量"]}, {"t": "fill", "type": "填空", "s": "所有挖方计价，填方中的路外借土要计价，____不重复计价。", "p": 104, "sec": "填空", "x": ["移挖作填"]}, {"t": "fill", "type": "填空", "s": "定额中“天然密实土”是指____，“夯实土”是指____，“松填土”是指____。", "p": 104, "sec": "填空", "x": ["未经扰动的自然土", "按规范要求经过分层碾压、夯实的土", "挖出的自然土自然堆放、未经夯实填在槽坑中的土"]}, {"t": "fill", "type": "填空", "s": "土方松实系数换算表中，自然方为 1，松方为____，实方为____。", "p": 104, "sec": "填空", "x": ["1.33", "0.85"]}, {"t": "fill", "type": "填空", "s": "生产上多采用____调配法进行土石方调配。", "p": 104, "sec": "填空", "x": ["土石方计算表"]}, {"t": "mc", "type": "选择", "s": "横断面面积计算中，积距法的总面积公式为（ ）。", "p": 105, "sec": "选择", "o": ["A=bΣhi", "A=1/2Σ(xi·yi+1－xi-1·yi)", "A=1/2(F1+F2)L", "A=1/3(F1+F2)L"], "a": 0, "w": "积距法把断面等分为宽 b 的竖条，量各条中心高 hi 求和再乘 b。"}, {"t": "mc", "type": "选择", "s": "当相邻两断面面积相差较大时，土石方体积计算应采用（ ）。", "p": 105, "sec": "选择", "o": ["平均断面法", "棱台公式", "积距法", "坐标法"], "a": 1, "w": "面积相近用棱柱体（平均断面法）；相差较大或填挖过渡段用棱台公式。"}, {"t": "mc", "type": "选择", "s": "经济运距的计算公式 Lj=B/T+Lm 中，B 表示（ ）。", "p": 105, "sec": "选择", "o": ["远运运费单价", "借土单价", "免费运距", "调配方数"], "a": 1, "w": "B 为借土单价，T 为远运运费单价，Lm 为免费运距。"}, {"t": "mc", "type": "选择", "s": "一般汽车运输的免费运距为（ ）。", "p": 105, "sec": "选择", "o": ["20 米", "100 米", "1 公里", "5 公里"], "a": 2, "w": "人工运输免费运距 20 m，汽车运输 1 km。"}, {"t": "mc", "type": "选择", "s": "以下哪个等式是正确的？", "p": 105, "sec": "选择", "o": ["填方＝本桩利用＋挖余", "挖方＝本桩利用＋填缺", "挖方＋借方＝填方＋弃方", "计价土石方＝填方＋借方"], "a": 2, "w": "三个复核等式之一；另外两条是填方＝本桩利用＋填缺、挖方＝本桩利用＋挖余。"}, {"t": "mc", "type": "选择", "s": "关于计价土石方，以下说法正确的是（ ）。", "p": 106, "sec": "选择", "o": ["计价土石方＝挖方数量＋填方数量", "移挖作填的土方需要重复计价", "计价土石方＝挖方数量＋借方数量", "所有填方都需要计价"], "a": 2, "w": "所有挖方计价、路外借土计价，移挖作填不重复计价。"}, {"t": "mc", "type": "选择", "s": "土方松实系数换算表中，自然方为 1，松方为（ ）。", "p": 106, "sec": "选择", "o": ["0.85", "1.33", "1.53", "1.07"], "a": 1, "w": "自然方 1、松方 1.33、实方 0.85；1 m³ 天然土挖松后变 1.33 m³，压实后 0.85 m³。"}, {"t": "mc", "type": "选择", "s": "土石方调配时，首先应考虑的是（ ）。", "p": 106, "sec": "选择", "o": ["纵向调运", "横向平衡", "借方", "弃方"], "a": 1, "w": "先横向平衡（移挖作填、运距最短），剩余或不足再纵向调运。"}, {"t": "mc", "type": "选择", "s": "以下哪种情况应优先考虑上下线的土方竖向调运？", "p": 106, "sec": "选择", "o": ["直线路段", "回头曲线路段", "桥梁路段", "隧道路段"], "a": 1, "w": "回头曲线路段上下线距离近，优先考虑上下线竖向调运。"}, {"t": "mc", "type": "选择", "s": "土石方计算表调配法中，复核检查的等式不包括（ ）。", "p": 106, "sec": "选择", "o": ["填方＝本桩利用＋填缺", "挖方＝本桩利用＋挖余", "挖方＋借方＝填方＋弃方", "填方＝借方＋弃方"], "a": 3, "w": "复核三等式不含“填方＝借方＋弃方”，该项不是调配平衡关系。"}, {"t": "tf", "type": "判断", "s": "积距法适合用计算机程序计算，坐标法适合手工计算。", "p": 107, "sec": "判断", "o": ["对", "错"], "a": 1, "w": "说反了：积距法适合手工，坐标法精度高、适合计算机。"}, {"t": "tf", "type": "判断", "s": "平均断面法适用于相邻两断面面积相差较大的情况。", "p": 107, "sec": "判断", "o": ["对", "错"], "a": 1, "w": "平均断面法适用于面积相近；相差较大或填挖过渡段应用棱台公式。"}, {"t": "tf", "type": "判断", "s": "经济运距是指按费用计算的纵向调运的最大限度。", "p": 107, "sec": "判断", "o": ["对", "错"], "a": 0, "w": "运距超过经济运距，运费就比买土还贵。"}, {"t": "tf", "type": "判断", "s": "免费运距是指在这个距离之内运输不额外计费。", "p": 107, "sec": "判断", "o": ["对", "错"], "a": 0, "w": "人工 20 m、汽车 1 km 内不额外计费。"}, {"t": "tf", "type": "判断", "s": "土石方调配时，应先纵向调配，再横向平衡。", "p": 107, "sec": "判断", "o": ["对", "错"], "a": 1, "w": "应先横向平衡，再纵向调配。"}, {"t": "tf", "type": "判断", "s": "计价土石方等于挖方数量加借方数量。", "p": 107, "sec": "判断", "o": ["对", "错"], "a": 0, "w": "所有挖方计价、路外借土计价，移挖作填不重复计价。"}, {"t": "tf", "type": "判断", "s": "移挖作填的土方需要重复计价。", "p": 107, "sec": "判断", "o": ["对", "错"], "a": 1, "w": "移挖作填已在挖方中计过一次价，不重复计价。"}, {"t": "tf", "type": "判断", "s": "天然密实土的体积大于夯实土的体积。", "p": 107, "sec": "判断", "o": ["对", "错"], "a": 0, "w": "自然方 1、实方 0.85，压实后体积变小。"}, {"t": "tf", "type": "判断", "s": "1 立方米天然密实土挖松后变成 1.33 立方米松方。", "p": 107, "sec": "判断", "o": ["对", "错"], "a": 0, "w": "松实系数：自然方 1 → 松方 1.33 → 实方 0.85。"}, {"t": "tf", "type": "判断", "s": "石方和土方可以混合调配，不需要分开。", "p": 107, "sec": "判断", "o": ["对", "错"], "a": 1, "w": "不同土石方应分开调配，以保证路基填方质量与构造物材料供应。"}, {"t": "term", "type": "名词解释", "s": "经济运距", "p": 108, "sec": "名词解释", "x": "按费用计算的纵向调运的最大限度，Lj=B/T+Lm。调运距离超过经济运距时，运费比买土还贵，就不如弃方另借。"}, {"t": "term", "type": "名词解释", "s": "免费运距", "p": 108, "sec": "名词解释", "x": "在这个距离之内运输不额外计费；一般人工运输 20 m、汽车运输 1 km。"}, {"t": "term", "type": "名词解释", "s": "本桩利用", "p": 108, "sec": "名词解释", "x": "同一个桩号上挖出来的土直接填到旁边填方里去，是最省钱的横向调运方式。"}, {"t": "term", "type": "名词解释", "s": "填缺", "p": 108, "sec": "名词解释", "x": "本桩利用之后，填方仍然不够的部分，需通过纵向调运或借方补充。"}, {"t": "term", "type": "名词解释", "s": "挖余", "p": 108, "sec": "名词解释", "x": "本桩利用之后，挖方仍然用不完的部分，需通过纵向调运或弃方处理。"}, {"t": "term", "type": "名词解释", "s": "计价土石方", "p": 108, "sec": "名词解释", "x": "需要计算费用的土石方数量，计价土石方＝挖方数量＋借方数量；所有挖方计价，路外借土计价，移挖作填不重复计价。"}, {"t": "term", "type": "名词解释", "s": "天然密实土", "p": 108, "sec": "名词解释", "x": "未经扰动的自然土（山体中原状土），体积最“实”，松实系数按 1 计。"}, {"t": "term", "type": "名词解释", "s": "夯实土", "p": 108, "sec": "名词解释", "x": "按规范要求经过分层碾压、夯实的土，即填到路基上压实后的土，体积比天然密实土小（系数 0.85）。"}, {"t": "term", "type": "名词解释", "s": "松填土", "p": 108, "sec": "名词解释", "x": "挖出的自然土自然堆放、未经夯实填在槽坑中的土，体积最大（松方系数 1.33）。"}, {"t": "calc", "type": "计算", "s": "题目一：某公路路基施工中，有一段填方路堤需要填筑。已知填方压实后的体积（实方）为 8000 m³，采用土方填筑，从取土场挖取天然密实土（自然方）来填筑。（土方松实系数：自然方 1，松方 1.33，实方 0.85）\n（1）需要从取土场挖取多少自然方的土？\n（2）挖出来的土堆放在路边，松方体积是多少？\n（3）如果利用路段本身挖方产生的天然密实土来填筑，请分析整个过程中体积是如何变化的。", "p": 109, "sec": "计算", "x": "（1）自然方 = 8000 ÷ 0.85 ≈ 9411.8 m³\n（2）松方 = 9411.8 × 1.33 ≈ 12517.7 m³\n（3）体积变化：天然密实土（自然方）→ 挖出松散堆放（松方，膨胀）→ 运输到填方处压实（实方，收缩）。挖方按自然方计、运输按松方计、填方按实方计，不做换算，挖、运、填三个环节就对不上账。"}, {"t": "calc", "type": "计算", "s": "题目二：某路段相邻两个断面的挖方面积分别为 F1=50 m² 和 F2=60 m²，两断面之间的距离 L=20 m。\n（1）用平均断面法计算两断面之间的土方体积。\n（2）如果 F1=30 m²、F2=90 m²，面积相差较大，用棱台公式计算体积。（m=F1/F2，F2>F1）", "p": 110, "sec": "计算", "x": "（1）平均断面法：V = (F1+F2)/2 × L = (50+60)/2 × 20 = 1100.0 m³\n（2）棱台公式：m = 30/90 = 0.333，√m = 0.577\nV = (L/3)·(F1+F2)·(1 + √m/(1+m)) = (20/3)×120×(1+0.4330) = 1146.4 m³\n或按 V = (L/3)(F1+F2+√(F1·F2)) = (20/3)(30+90+51.96) = 1146.4 m³\n对比：若用平均断面法得 1200.0 m³，棱柱法高估 53.6 m³（约 4.5%）——这正是面积相差大时要用棱台公式的原因。\n【注意】课件第 110 页原备注把因子写成 (1+√m)/(1+√m)（恒等于 1）、答案写 800 m³，那是错的，应为 (1+√m/(1+m))、1146.4 m³。"}, {"t": "qa", "type": "问答", "s": "简述横断面面积计算的两种方法，并说明各自的优缺点和适用场景。", "p": 111, "sec": "问答", "x": "积距法：把不规则横断面沿宽度方向等分成若干竖条，量出每个竖条中心高度，用 A=bΣhi 计算；优点是简单直观、适合手工；缺点是精度取决于量取准确性。坐标法：把断面轮廓看成多边形，用各转折点坐标代入 1/2Σ(xi·yi+1－xi-1·yi) 计算；优点是精度高、适合计算机编程；缺点是需精确坐标、手工计算繁琐。"}, {"t": "qa", "type": "问答", "s": "简述土石方数量计算中平均断面法和棱台公式的适用条件。", "p": 111, "sec": "问答", "x": "平均断面法（棱柱体）适用于相邻两断面均为填方或均为挖方、且面积大小相近的情况，V=1/2(F1+F2)L。棱台公式适用于面积相差较大、特别是填挖过渡段的情况，V=1/3(F1+F2)L(1+√m/(1+m))，其中 m=F1/F2 且 F2>F1。"}, {"t": "qa", "type": "问答", "s": "土石方调配的目的是什么？调配应遵循哪些原则？", "p": 111, "sec": "问答", "x": "目的是确定填方用土的来源、挖方弃土的去向，以及计价土石方的数量和运量。原则：①半填半挖断面先横向平衡、再纵向调配；②纵向调运距离应小于经济运距；③考虑桥涵位置和纵坡影响，一般不跨深沟、不上坡运土；④借土与弃土要与地方商量，尽量少占农田；⑤土方与石方分开调配；⑥回头曲线路段优先考虑上下线竖向调运。"}, {"t": "qa", "type": "问答", "s": "什么是经济运距？如何计算？它在土石方调配中有什么意义？", "p": 111, "sec": "问答", "x": "经济运距是按费用计算的纵向调运的最大限度，Lj=B/T+Lm（B 借土单价、T 远运运费单价、Lm 免费运距）。意义：运距超过经济运距，运费比直接买土还贵，就不如弃掉挖方、另借土，它是“该运还是该买”的分界线。"}, {"t": "qa", "type": "问答", "s": "土石方计算表调配法分哪几个步骤？请简要说明每个步骤的内容。", "p": 111, "sec": "问答", "x": "六步：①准备工作——计算并复核土石方数量，标注桥涵、陡坡、深沟等；②横向调运——计算本桩利用、填缺、挖余；③纵向调运——结合经济运距确定方案，用箭头标明方向与数量；④计算借方、废方数量和总运量；⑤复核检查；⑥计算计价土石方。"}, {"t": "qa", "type": "问答", "s": "复核检查土石方调配时，有哪三个等式必须成立？请写出来并解释其含义。", "p": 111, "sec": "问答", "x": "①填方＝本桩利用＋填缺＝横向调运＋纵向调运＋借方；②挖方＝本桩利用＋挖余＝横向调运＋纵向调运＋弃方；③挖方＋借方＝填方＋弃方。三个等式是土方调配的“账本”，一进一出必须对得上，对不上说明哪里算错了。"}, {"t": "qa", "type": "问答", "s": "什么是计价土石方？为什么移挖作填不重复计价？", "p": 111, "sec": "问答", "x": "计价土石方＝挖方数量＋借方数量。移挖作填不重复计价，是因为挖出来的土已经在挖方中计过一次价，若填方再计一次就重复了；但填方中的路外借土要单独计价。"}, {"t": "qa", "type": "问答", "s": "简述土方松实系数换算表中自然方、松方、实方三者之间的关系，并说明为什么算土方量时必须考虑松实系数换算。", "p": 111, "sec": "问答", "x": "以土方为例：自然方 1、松方 1.33、实方 0.85，三者关系为松方＞自然方＞实方。必须换算，是因为挖方按自然方计、运输按松方计、填方按实方计，不换算则挖、运、填三个环节的数量对不上账。"}, {"t": "qa", "type": "问答", "s": "土石方调配时，为什么要考虑桥涵位置和路线纵坡的影响？为什么要尽量少占农田？", "p": 111, "sec": "问答", "x": "跨深沟运土要架桥或绕路，成本太高；上坡运土油耗大、效率低，所以调配要结合地形、避免跨沟与上坡运土。少占农田是因为取土、弃土都要占地，占农田还要赔偿青苗损失，设计时应与地方沟通，尽量选荒地、坡地，这既是经济问题也是社会责任。"}, {"t": "qa", "type": "问答", "s": "请结合实例说明土石方计算表调配法的应用过程。", "p": 111, "sec": "问答", "x": "以某路段为例：先算出各断面的挖、填面积并列入表格；在同一桩号上横向平衡，得本桩利用、填缺、挖余；再结合经济运距确定纵向调配方案，用箭头标明方向与数量；然后计算借方、废方数量和总运量（总运量＝平均运距×调配方数）；最后用三个等式复核，全部对得上后再算计价土石方＝挖方数量＋借方数量。"}]};
+const KEY = 'hz_paper2_' + DATA.id;
 let st = {};
 try { st = JSON.parse(localStorage.getItem(KEY) || '{}'); } catch (e) { st = {}; }
 const save = () => localStorage.setItem(KEY, JSON.stringify(st));
 const esc = s => String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
 
+function norm(s) {
+  return String(s == null ? '' : s).trim().toLowerCase()
+    .replace(/[\s\u00a0]/g,'').replace(/[，、]/g,',').replace(/[～~—–－]/g,'~')
+    .replace(/（/g,'(').replace(/）/g,')').replace(/[；;]/g,';').replace(/：/g,':')
+    .replace(/[。.]$/,'').replace(/％/g,'%');
+}
+function eq(a, b) {
+  const x = norm(a), y = norm(b);
+  if (!x) return false;
+  if (x === y) return true;
+  const nx = parseFloat(x), ny = parseFloat(y);
+  if (!isNaN(nx) && !isNaN(ny) && Math.abs(nx - ny) < 1e-9) return true;
+  if (y.indexOf('或') >= 0) return y.split('或').some(t => t && norm(t) === x);
+  return false;
+}
+
+let graded = !!st.__graded;
+if (!st.__started) { st.__started = Date.now(); save(); }
+const startedAt = st.__started;
+
 document.getElementById('ptitle').textContent = DATA.title;
 document.getElementById('pmeta').textContent =
-  '共 ' + DATA.qs.length + ' 题 · 课件第 ' + DATA.pages + ' 页 · 直接在本页作答';
+  '共 ' + DATA.qs.length + ' 题 · 课件第 ' + DATA.pages + ' 页 · 全部做完才能看答案';
 
-let html = '', lastSec = '';
-DATA.qs.forEach((q, i) => {
-  if (q.sec !== lastSec) {
-    lastSec = q.sec;
-    html += '<div class="sec"><b>' + esc(q.sec) + '</b><i></i></div>';
-  }
-  html += '<section class="q"><div class="qtop"><span class="qno">' + (i + 1) + '</span>'
-    + '<span>' + q.type + ' · 课件 P' + q.p + '</span></div>';
-
+function isAuto(q) { return q.t === 'mc' || q.t === 'tf' || q.t === 'fill'; }
+function answered(i) {
+  const q = DATA.qs[i];
+  if (q.t === 'mc' || q.t === 'tf') return st['c' + i] !== undefined;
   if (q.t === 'fill') {
-    const segs = q.s.split(/_{2,}/);
-    const n = segs.length - 1;
-    const vals = (st['f' + i] && st['f' + i].length === n) ? st['f' + i] : new Array(n).fill('');
-    let line = '<div class="qs">';
-    segs.forEach((seg, k) => {
-      line += esc(seg);
-      if (k < n) {
-        const w = 7;
-        line += '<input class="blank-in" data-q="' + i + '" data-b="' + k
-          + '" style="width:' + w + 'em" value="' + esc(vals[k] || '') + '">';
-      }
-    });
-    html += line + '</div>';
-  } else {
-    html += '<div class="qs">' + esc(q.s) + '</div>';
+    const v = st['f' + i] || [];
+    return v.length === q.x.length && v.every(x => String(x).trim() !== '');
+  }
+  return String(st['t' + i] || '').trim() !== '';
+}
+function correct(i) {
+  const q = DATA.qs[i];
+  if (q.t === 'mc' || q.t === 'tf') return st['c' + i] === q.a;
+  if (q.t === 'fill') {
+    const v = st['f' + i] || [];
+    return q.x.every((a, k) => eq(v[k], a));
+  }
+  return null;
+}
+
+function stemHtml(q, i) {
+  if (q.t !== 'fill') return '<div class="qs">' + esc(q.s) + '</div>';
+  const segs = q.s.split(/_{2,}/);
+  const n = segs.length - 1;
+  const vals = (st['f' + i] && st['f' + i].length === n) ? st['f' + i] : new Array(n).fill('');
+  let line = '<div class="qs">';
+  segs.forEach((seg, k) => {
+    line += esc(seg);
+    if (k < n) {
+      let cls = 'blank-in';
+      if (graded) cls += eq(vals[k], q.x[k]) ? ' ok' : ' bad';
+      line += '<input class="' + cls + '" data-q="' + i + '" data-b="' + k + '" value="'
+        + esc(vals[k] || '') + '"' + (graded ? ' disabled' : '') + '>';
+    }
+  });
+  return line + '</div>';
+}
+
+function render() {
+  let html = '', lastSec = '';
+  DATA.qs.forEach((q, i) => {
+    if (q.sec !== lastSec) { lastSec = q.sec; html += '<div class="sec"><b>' + esc(q.sec) + '</b><i></i></div>'; }
+    html += '<section class="q"><div class="qtop"><span class="qno">' + (i + 1) + '</span>'
+      + '<span>' + q.type + ' · 课件 P' + q.p + '</span></div>' + stemHtml(q, i);
+
     if (q.t === 'mc' || q.t === 'tf') {
       const picked = st['c' + i];
       html += q.o.map((t, k) => {
         const key = q.t === 'tf' ? (k === 0 ? '√' : '×') : 'ABCD'[k];
-        return '<div class="opt' + (picked === k ? ' on' : '') + '" data-q="' + i + '" data-k="' + k + '">'
+        let cls = 'opt';
+        if (graded) {
+          if (k === q.a) cls += ' right';
+          else if (k === picked) cls += ' wrong';
+          else cls += ' dim';
+        } else if (picked === k) cls += ' on';
+        return '<div class="' + cls + '" data-q="' + i + '" data-k="' + k + '">'
           + '<span class="k">' + key + '</span><span>' + esc(t) + '</span></div>';
       }).join('');
+      if (graded) {
+        const ok = picked === q.a;
+        html += '<div class="res ' + (ok ? 'good' : 'bad') + '"><h4>' + (ok ? '✓ 答对了' : '✗ 答错了')
+          + '</h4><p><b>正确答案：</b>' + (q.t === 'tf' ? (q.a === 0 ? '对' : '错') : 'ABCD'[q.a])
+          + '</p><p><b>解析：</b>' + esc(q.w || '') + '</p></div>';
+      }
+    } else if (q.t === 'fill') {
+      if (graded) {
+        const v = st['f' + i] || [];
+        const nRight = q.x.filter((a, k) => eq(v[k], a)).length;
+        const all = nRight === q.x.length;
+        html += '<div class="res ' + (all ? 'good' : 'bad') + '"><h4>'
+          + (all ? '✓ 全对（' + nRight + '/' + q.x.length + '）' : '✗ 只对了 ' + nRight + '/' + q.x.length + ' 空')
+          + '</h4><p><b>参考答案：</b></p><ol>'
+          + q.x.map(a => '<li>' + esc(a) + '</li>').join('') + '</ol></div>';
+      }
     } else {
-      const v = (st['t' + i] || '');
-      html += '<textarea data-q="' + i + '" placeholder="在这里作答">' + esc(v) + '</textarea>';
+      const v = st['t' + i] || '';
+      html += '<textarea data-q="' + i + '"' + (graded ? ' disabled' : '')
+        + ' placeholder="在这里作答">' + esc(v) + '</textarea>';
+      if (graded) {
+        html += '<div class="res info"><h4>参考答案<span style="font-weight:400;color:#9499A0;'
+          + 'font-size:12px"> · 不参与计分</span></h4>'
+          + (Array.isArray(q.x)
+              ? '<ol>' + q.x.map(a => '<li>' + esc(a) + '</li>').join('') + '</ol>'
+              : '<p>' + esc(q.x).replace(/\n/g, '<br>') + '</p>') + '</div>';
+      }
     }
-  }
-  html += '</section>';
-});
-document.getElementById('list').innerHTML = html;
-
-function progress() {
-  let done = 0;
-  DATA.qs.forEach((q, i) => {
-    if (q.t === 'mc' || q.t === 'tf') { if (st['c' + i] !== undefined) done++; }
-    else if (q.t === 'fill') {
-      const v = st['f' + i] || [];
-      if (v.length && v.every(x => String(x).trim() !== '')) done++;
-    } else if (String(st['t' + i] || '').trim() !== '') done++;
+    html += '</section>';
   });
-  document.getElementById('pcount').textContent = '已作答 ' + done + ' / ' + DATA.qs.length;
-  document.getElementById('pfill').style.width = Math.round(done / DATA.qs.length * 100) + '%';
+  document.getElementById('list').innerHTML = html;
+  bind();
+  updateBar();
+  renderScore();
 }
 
-document.querySelectorAll('.opt').forEach(el => {
-  el.onclick = () => {
-    const i = Number(el.dataset.q);
-    st['c' + i] = Number(el.dataset.k);
-    save();
-    document.querySelectorAll('.opt[data-q="' + i + '"]').forEach(x => x.classList.remove('on'));
-    el.classList.add('on');
-    progress();
-  };
-});
+function bind() {
+  if (graded) return;
+  document.querySelectorAll('.opt').forEach(el => {
+    el.onclick = () => {
+      const i = Number(el.dataset.q);
+      st['c' + i] = Number(el.dataset.k); save();
+      document.querySelectorAll('.opt[data-q="' + i + '"]').forEach(x => x.classList.remove('on'));
+      el.classList.add('on');
+      updateBar();
+    };
+  });
+  document.querySelectorAll('input.blank-in').forEach(inp => {
+    inp.oninput = () => {
+      const i = Number(inp.dataset.q);
+      const all = document.querySelectorAll('input.blank-in[data-q="' + i + '"]');
+      st['f' + i] = [].map.call(all, x => x.value); save(); updateBar();
+    };
+  });
+  document.querySelectorAll('textarea[data-q]').forEach(ta => {
+    ta.oninput = () => { st['t' + Number(ta.dataset.q)] = ta.value; save(); updateBar(); };
+  });
+}
 
-document.querySelectorAll('input.blank-in').forEach(inp => {
-  inp.oninput = () => {
-    const i = Number(inp.dataset.q);
-    const all = document.querySelectorAll('input.blank-in[data-q="' + i + '"]');
-    st['f' + i] = [].map.call(all, x => x.value);
-    save(); progress();
-  };
-});
+function stats() {
+  let autoTotal = 0, autoRight = 0, done = 0;
+  DATA.qs.forEach((q, i) => {
+    if (answered(i)) done++;
+    if (isAuto(q)) { autoTotal++; if (answered(i) && correct(i)) autoRight++; }
+  });
+  return { autoTotal: autoTotal, autoRight: autoRight, done: done, total: DATA.qs.length };
+}
 
-document.querySelectorAll('textarea[data-q]').forEach(ta => {
-  ta.oninput = () => {
-    st['t' + Number(ta.dataset.q)] = ta.value;
-    save(); progress();
-  };
-});
+function updateBar() {
+  const s = stats();
+  document.getElementById('pcount').textContent =
+    graded ? '已交卷 · 机读题 ' + s.autoRight + '/' + s.autoTotal
+           : '已作答 ' + s.done + ' / ' + s.total;
+  document.getElementById('pfill').style.width = Math.round(s.done / s.total * 100) + '%';
+  const btn = document.getElementById('submit');
+  if (graded) { btn.textContent = '重做本部分'; btn.disabled = false; btn.className = 'btn ghost'; }
+  else {
+    btn.textContent = s.done < s.total ? '还有 ' + (s.total - s.done) + ' 题未答' : '交卷并看答案';
+    btn.disabled = s.done < s.total;
+    btn.className = 'btn';
+  }
+}
 
-document.getElementById('clear').onclick = () => {
-  if (!confirm('清空本部分的作答？')) return;
-  st = {}; save();
-  document.querySelectorAll('.opt').forEach(x => x.classList.remove('on'));
-  document.querySelectorAll('input.blank-in').forEach(x => { x.value = ''; });
-  document.querySelectorAll('textarea[data-q]').forEach(x => { x.value = ''; });
-  progress();
+function renderScore() {
+  const box = document.getElementById('score');
+  if (!graded) { box.style.display = 'none'; box.innerHTML = ''; return; }
+  const s = stats();
+  const rate = s.autoTotal ? Math.round(s.autoRight / s.autoTotal * 100) : 0;
+  const sec = Math.max(0, Math.round((Date.now() - startedAt) / 1000));
+  box.style.display = 'block';
+  box.innerHTML = '<div class="row"><span class="big">' + rate + '%</span>'
+    + '<span class="meta">机读题正确率（' + s.autoRight + '/' + s.autoTotal
+    + '）· 名词解释/问答/计算不参与计分</span></div>'
+    + '<div class="meta">全卷 ' + s.total + ' 题已全部作答 · 用时 '
+    + Math.floor(sec / 60) + ' 分 ' + (sec % 60) + ' 秒</div>';
+}
+
+document.getElementById('submit').onclick = () => {
+  if (graded) {
+    if (!confirm('重做会把本部分的作答清空，确定？')) return;
+    st = { __started: Date.now() }; graded = false; save(); render(); window.scrollTo({ top: 0 }); return;
+  }
+  const s = stats();
+  if (s.done < s.total) { alert('还有 ' + (s.total - s.done) + ' 题没答，做完才能看答案'); return; }
+  st.__graded = true; graded = true; save();
+  render(); window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
-progress();
+render();
 </script>
 </body></html>
